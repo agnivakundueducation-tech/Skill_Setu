@@ -1,0 +1,298 @@
+import { OpportunityRecord } from '../types/opportunity';
+
+/**
+ * Realistic Demo Opportunities dataset for Demo Mode and simulated testing.
+ * These opportunities represent synthetic demonstration postings across key engineering domains.
+ * All opportunities are clearly labeled as demonstration records.
+ */
+export const DEMO_OPPORTUNITIES: OpportunityRecord[] = [
+  {
+    opportunityId: 'demo-opp-1',
+    title: 'Full-Stack Software Engineer Intern',
+    companyName: 'Apex Cloud Systems (Demo Partner)',
+    companyLogo: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=120&auto=format&fit=crop&q=80',
+    opportunityType: 'Internship',
+    description: 'Join the platform core team building high-throughput microservices and responsive cloud console interfaces. You will develop modern web services in TypeScript/Node.js, write optimized SQL queries, and deploy cloud-native containers.',
+    location: 'Bengaluru, Karnataka, India',
+    city: 'Bengaluru',
+    workMode: 'Hybrid',
+    duration: '6 Months',
+    stipend: '₹45,000 / month',
+    salaryMin: 45000,
+    salaryMax: 50000,
+    applicationDeadline: '2026-09-30',
+    requiredSkills: [
+      { skillId: 'skill-python', skillName: 'Python', requiredLevel: 80, importance: 'required', category: 'Programming' },
+      { skillId: 'skill-sql', skillName: 'SQL', requiredLevel: 70, importance: 'required', category: 'Databases' },
+      { skillId: 'skill-dsa', skillName: 'DSA', requiredLevel: 75, importance: 'required', category: 'Core CS' }
+    ],
+    preferredSkills: [
+      { skillId: 'skill-react', skillName: 'React', requiredLevel: 65, importance: 'preferred', category: 'Frontend' },
+      { skillId: 'skill-docker', skillName: 'Docker', requiredLevel: 60, importance: 'preferred', category: 'DevOps' },
+      { skillId: 'skill-communication', skillName: 'Communication', requiredLevel: 70, importance: 'preferred', category: 'Professional' }
+    ],
+    eligibility: 'B.Tech / B.E. / M.C.A. in Computer Science or IT (CGPA >= 7.5)',
+    experienceLevel: 'Fresher / Final Year',
+    domain: 'Software Development',
+    postedBy: 'demo-industry-apex',
+    institutionVisibility: 'All',
+    status: 'active',
+    openSlots: 4,
+    applicantsCount: 18,
+    featured: true,
+    createdAt: '2026-08-01T09:00:00.000Z',
+    updatedAt: '2026-08-15T12:00:00.000Z'
+  },
+  {
+    opportunityId: 'demo-opp-2',
+    title: 'Data Science & Machine Learning Intern',
+    companyName: 'NeuralMetrics Labs (Demo Partner)',
+    companyLogo: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=120&auto=format&fit=crop&q=80',
+    opportunityType: 'Internship',
+    description: 'Work alongside research engineers on statistical modeling, feature pipelines, exploratory data analysis, and predictive modeling for customer intelligence and supply forecasting.',
+    location: 'Hyderabad, Telangana, India',
+    city: 'Hyderabad',
+    workMode: 'Remote',
+    duration: '6 Months',
+    stipend: '₹50,000 / month',
+    salaryMin: 50000,
+    salaryMax: 60000,
+    applicationDeadline: '2026-10-15',
+    requiredSkills: [
+      { skillId: 'skill-python', skillName: 'Python', requiredLevel: 85, importance: 'required', category: 'Programming' },
+      { skillId: 'skill-aiml', skillName: 'AI/ML', requiredLevel: 75, importance: 'required', category: 'Data & AI' },
+      { skillId: 'skill-database', skillName: 'Database', requiredLevel: 70, importance: 'required', category: 'Databases' }
+    ],
+    preferredSkills: [
+      { skillId: 'skill-problemsolving', skillName: 'Problem Solving', requiredLevel: 80, importance: 'preferred', category: 'Core CS' },
+      { skillId: 'skill-cloud', skillName: 'Cloud Computing', requiredLevel: 60, importance: 'preferred', category: 'Cloud' }
+    ],
+    eligibility: 'Pre-final or Final year students in CS, Data Science, Math, or AI (CGPA >= 8.0)',
+    experienceLevel: 'Fresher / Pre-Final Year',
+    domain: 'Data Science',
+    postedBy: 'demo-industry-neural',
+    institutionVisibility: 'All',
+    status: 'active',
+    openSlots: 2,
+    applicantsCount: 32,
+    featured: true,
+    createdAt: '2026-08-05T10:00:00.000Z',
+    updatedAt: '2026-08-18T14:30:00.000Z'
+  },
+  {
+    opportunityId: 'demo-opp-3',
+    title: 'Applied AI / ML Engineer Associate',
+    companyName: 'CognitiveWave AI (Demo Partner)',
+    companyLogo: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=120&auto=format&fit=crop&q=80',
+    opportunityType: 'Full-Time',
+    description: 'Design and deploy production-grade computer vision and NLP model inference pipelines. Focus on latency optimization, retrieval augmented generation, and embeddings search architecture.',
+    location: 'Pune, Maharashtra, India',
+    city: 'Pune',
+    workMode: 'Hybrid',
+    duration: 'Full-Time Permanent',
+    stipend: '₹14,00,000 - ₹18,00,000 / year',
+    salaryMin: 1400000,
+    salaryMax: 1800000,
+    applicationDeadline: '2026-11-01',
+    requiredSkills: [
+      { skillId: 'skill-aiml', skillName: 'AI/ML', requiredLevel: 85, importance: 'required', category: 'AI & Data' },
+      { skillId: 'skill-python', skillName: 'Python', requiredLevel: 85, importance: 'required', category: 'Programming' },
+      { skillId: 'skill-dsa', skillName: 'DSA', requiredLevel: 75, importance: 'required', category: 'Core CS' }
+    ],
+    preferredSkills: [
+      { skillId: 'skill-cloud', skillName: 'Cloud Computing', requiredLevel: 70, importance: 'preferred', category: 'Cloud' },
+      { skillId: 'skill-teamwork', skillName: 'Teamwork', requiredLevel: 75, importance: 'preferred', category: 'Professional' }
+    ],
+    eligibility: 'Graduating Batch 2025/2026 (B.Tech / M.Tech in CS/AI/Data Science)',
+    experienceLevel: 'Entry Level (0-1 Years)',
+    domain: 'AI/ML',
+    postedBy: 'demo-industry-cogwave',
+    institutionVisibility: 'All',
+    status: 'active',
+    openSlots: 3,
+    applicantsCount: 24,
+    featured: false,
+    createdAt: '2026-08-10T11:00:00.000Z',
+    updatedAt: '2026-08-20T16:00:00.000Z'
+  },
+  {
+    opportunityId: 'demo-opp-4',
+    title: 'Cloud Infrastructure & DevOps Engineer Intern',
+    companyName: 'StratusGrid Technologies (Demo Partner)',
+    companyLogo: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=120&auto=format&fit=crop&q=80',
+    opportunityType: 'Internship',
+    description: 'Assist in managing multi-region Kubernetes clusters, automated CI/CD deployment pipelines, infrastructure as code, and observability monitoring systems.',
+    location: 'Noida / NCR, India',
+    city: 'Noida',
+    workMode: 'On-site',
+    duration: '6 Months',
+    stipend: '₹40,000 / month',
+    salaryMin: 40000,
+    salaryMax: 45000,
+    applicationDeadline: '2026-09-25',
+    requiredSkills: [
+      { skillId: 'skill-cloud', skillName: 'Cloud Computing', requiredLevel: 75, importance: 'required', category: 'Cloud' },
+      { skillId: 'skill-python', skillName: 'Python', requiredLevel: 70, importance: 'required', category: 'Programming' },
+      { skillId: 'skill-problemsolving', skillName: 'Problem Solving', requiredLevel: 75, importance: 'required', category: 'Core CS' }
+    ],
+    preferredSkills: [
+      { skillId: 'skill-cybersecurity', skillName: 'Cybersecurity', requiredLevel: 65, importance: 'preferred', category: 'Security' },
+      { skillId: 'skill-database', skillName: 'Database', requiredLevel: 65, importance: 'preferred', category: 'Databases' }
+    ],
+    eligibility: 'B.Tech CS/IT/ECE (CGPA >= 7.0)',
+    experienceLevel: 'Final Year / Fresher',
+    domain: 'Cloud',
+    postedBy: 'demo-industry-stratus',
+    institutionVisibility: 'All',
+    status: 'active',
+    openSlots: 2,
+    applicantsCount: 15,
+    featured: false,
+    createdAt: '2026-08-08T08:30:00.000Z',
+    updatedAt: '2026-08-16T11:20:00.000Z'
+  },
+  {
+    opportunityId: 'demo-opp-5',
+    title: 'Cybersecurity Operations Apprentice',
+    companyName: 'Vanguard CyberShield (Demo Partner)',
+    companyLogo: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=120&auto=format&fit=crop&q=80',
+    opportunityType: 'Apprenticeship',
+    description: 'Work with the Security Operations Center (SOC) team on threat detection, vulnerability analysis, incident response triage, and secure code review practices.',
+    location: 'Chennai, Tamil Nadu, India',
+    city: 'Chennai',
+    workMode: 'Hybrid',
+    duration: '1 Year',
+    stipend: '₹35,000 / month',
+    salaryMin: 35000,
+    salaryMax: 40000,
+    applicationDeadline: '2026-10-20',
+    requiredSkills: [
+      { skillId: 'skill-cybersecurity', skillName: 'Cybersecurity', requiredLevel: 75, importance: 'required', category: 'Security' },
+      { skillId: 'skill-problemsolving', skillName: 'Problem Solving', requiredLevel: 70, importance: 'required', category: 'Core CS' },
+      { skillId: 'skill-communication', skillName: 'Communication', requiredLevel: 70, importance: 'required', category: 'Professional' }
+    ],
+    preferredSkills: [
+      { skillId: 'skill-cloud', skillName: 'Cloud Computing', requiredLevel: 60, importance: 'preferred', category: 'Cloud' },
+      { skillId: 'skill-python', skillName: 'Python', requiredLevel: 65, importance: 'preferred', category: 'Programming' }
+    ],
+    eligibility: 'Passionate about InfoSec / Ethical Hacking / Network Security (Certifications are a bonus)',
+    experienceLevel: 'Apprentice / Entry Level',
+    domain: 'Cybersecurity',
+    postedBy: 'demo-industry-vanguard',
+    institutionVisibility: 'All',
+    status: 'active',
+    openSlots: 5,
+    applicantsCount: 28,
+    featured: true,
+    createdAt: '2026-08-12T13:15:00.000Z',
+    updatedAt: '2026-08-19T09:45:00.000Z'
+  },
+  {
+    opportunityId: 'demo-opp-6',
+    title: 'Frontend Web Developer Intern',
+    companyName: 'PixelCraft Digital (Demo Partner)',
+    companyLogo: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=120&auto=format&fit=crop&q=80',
+    opportunityType: 'Internship',
+    description: 'Build user-facing responsive applications, interactive analytics dashboards, and design system components using modern React, Tailwind CSS, and Web standards.',
+    location: 'Mumbai, Maharashtra, India',
+    city: 'Mumbai',
+    workMode: 'Remote',
+    duration: '3-6 Months',
+    stipend: '₹38,000 / month',
+    salaryMin: 38000,
+    salaryMax: 42000,
+    applicationDeadline: '2026-09-15',
+    requiredSkills: [
+      { skillId: 'skill-webdev', skillName: 'Web Development', requiredLevel: 80, importance: 'required', category: 'Frontend' },
+      { skillId: 'skill-problemsolving', skillName: 'Problem Solving', requiredLevel: 70, importance: 'required', category: 'Core CS' },
+      { skillId: 'skill-communication', skillName: 'Communication', requiredLevel: 70, importance: 'required', category: 'Professional' }
+    ],
+    preferredSkills: [
+      { skillId: 'skill-database', skillName: 'Database', requiredLevel: 60, importance: 'preferred', category: 'Databases' },
+      { skillId: 'skill-teamwork', skillName: 'Teamwork', requiredLevel: 75, importance: 'preferred', category: 'Professional' }
+    ],
+    eligibility: 'Strong portfolio of verified web projects and responsive UI implementations',
+    experienceLevel: 'Student / Fresher',
+    domain: 'Web Development',
+    postedBy: 'demo-industry-pixelcraft',
+    institutionVisibility: 'All',
+    status: 'active',
+    openSlots: 3,
+    applicantsCount: 41,
+    featured: false,
+    createdAt: '2026-08-03T14:00:00.000Z',
+    updatedAt: '2026-08-17T17:10:00.000Z'
+  },
+  {
+    opportunityId: 'demo-opp-7',
+    title: 'Product & Business Analytics Fellow',
+    companyName: 'Quantix Insights (Demo Partner)',
+    companyLogo: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=120&auto=format&fit=crop&q=80',
+    opportunityType: 'Live Project',
+    description: 'Work directly on live product growth metrics, user retention cohorts, conversion funnels, and executive dashboard analytics for high-growth SaaS applications.',
+    location: 'Gurugram, Haryana, India',
+    city: 'Gurugram',
+    workMode: 'Remote',
+    duration: '3 Months (Live Project)',
+    stipend: '₹30,000 / month + Performance Grant',
+    salaryMin: 30000,
+    salaryMax: 35000,
+    applicationDeadline: '2026-10-05',
+    requiredSkills: [
+      { skillId: 'skill-database', skillName: 'Database', requiredLevel: 75, importance: 'required', category: 'Databases' },
+      { skillId: 'skill-python', skillName: 'Python', requiredLevel: 70, importance: 'required', category: 'Programming' },
+      { skillId: 'skill-problemsolving', skillName: 'Problem Solving', requiredLevel: 75, importance: 'required', category: 'Core CS' }
+    ],
+    preferredSkills: [
+      { skillId: 'skill-communication', skillName: 'Communication', requiredLevel: 75, importance: 'preferred', category: 'Professional' },
+      { skillId: 'skill-leadership', skillName: 'Leadership', requiredLevel: 65, importance: 'preferred', category: 'Professional' }
+    ],
+    eligibility: 'Engineering / Economics / Statistics students with strong analytical and SQL fundamentals',
+    experienceLevel: 'Student / Pre-Final / Final Year',
+    domain: 'Product/Business Analytics',
+    postedBy: 'demo-industry-quantix',
+    institutionVisibility: 'All',
+    status: 'active',
+    openSlots: 4,
+    applicantsCount: 19,
+    featured: false,
+    createdAt: '2026-08-07T12:00:00.000Z',
+    updatedAt: '2026-08-14T15:20:00.000Z'
+  },
+  {
+    opportunityId: 'demo-opp-8',
+    title: 'Systems & AI Research Intern',
+    companyName: 'Horizon Next Labs (Demo Partner)',
+    companyLogo: 'https://images.unsplash.com/photo-1507668077129-56e32842fceb?w=120&auto=format&fit=crop&q=80',
+    opportunityType: 'Part-Time',
+    description: 'Conduct exploratory systems research on decentralized consensus mechanisms, distributed cache coherency, and scalable vector store indexing.',
+    location: 'Bengaluru, Karnataka, India',
+    city: 'Bengaluru',
+    workMode: 'Hybrid',
+    duration: '6 Months (20 hrs/week)',
+    stipend: '₹35,000 / month',
+    salaryMin: 35000,
+    salaryMax: 40000,
+    applicationDeadline: '2026-11-15',
+    requiredSkills: [
+      { skillId: 'skill-dsa', skillName: 'DSA', requiredLevel: 80, importance: 'required', category: 'Core CS' },
+      { skillId: 'skill-python', skillName: 'Python', requiredLevel: 75, importance: 'required', category: 'Programming' },
+      { skillId: 'skill-problemsolving', skillName: 'Problem Solving', requiredLevel: 80, importance: 'required', category: 'Core CS' }
+    ],
+    preferredSkills: [
+      { skillId: 'skill-aiml', skillName: 'AI/ML', requiredLevel: 70, importance: 'preferred', category: 'AI & Data' },
+      { skillId: 'skill-cloud', skillName: 'Cloud Computing', requiredLevel: 65, importance: 'preferred', category: 'Cloud' }
+    ],
+    eligibility: 'Strong mathematical aptitude and background in algorithms, systems design, or research publication intent',
+    experienceLevel: 'Pre-Final / Final Year / Masters',
+    domain: 'Research',
+    postedBy: 'demo-industry-horizon',
+    institutionVisibility: 'All',
+    status: 'active',
+    openSlots: 2,
+    applicantsCount: 11,
+    featured: true,
+    createdAt: '2026-08-09T16:00:00.000Z',
+    updatedAt: '2026-08-21T18:00:00.000Z'
+  }
+];

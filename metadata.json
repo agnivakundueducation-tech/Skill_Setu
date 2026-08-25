@@ -1,0 +1,6 @@
+{
+  "name": "SkillSetu AI",
+  "description": "Enterprise Skill & Career Platform featuring Phase 15-B Gemini-Powered Contextual Intelligence Layer for Setu AI with strict platform grounding, deterministic fallback, multi-role intelligence, and actionable recommendations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

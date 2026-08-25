@@ -1,0 +1,293 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Authenticated user profile in SkillSetu AI containing identity, verified role, and institution affiliation.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Firebase Authentication Unique Identifier",
+          "maxLength": 128
+        },
+        "fullName": {
+          "type": "string",
+          "description": "User's full display name",
+          "minLength": 2,
+          "maxLength": 100
+        },
+        "email": {
+          "type": "string",
+          "description": "User's primary email address",
+          "format": "email",
+          "maxLength": 150
+        },
+        "role": {
+          "type": "string",
+          "description": "Ecosystem Persona Role",
+          "enum": ["student", "industry", "academician", "institution"]
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp of account creation",
+          "maxLength": 50
+        },
+        "profileCompleted": {
+          "type": "boolean",
+          "description": "Whether the user has completed full onboarding profile setup"
+        },
+        "department": {
+          "type": "string",
+          "description": "Academic department or company department",
+          "maxLength": 100
+        },
+        "institution": {
+          "type": "string",
+          "description": "Associated institution or company name",
+          "maxLength": 150
+        },
+        "photoURL": {
+          "type": "string",
+          "description": "Profile picture URL",
+          "maxLength": 500
+        }
+      },
+      "required": ["uid", "fullName", "email", "role", "createdAt", "profileCompleted"]
+    },
+    "StudentProfile": {
+      "title": "Student Profile",
+      "description": "Student domain profile with readiness metrics and academic info.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "fullName": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "institution": { "type": "string" },
+        "department": { "type": "string" },
+        "degree": { "type": "string" },
+        "graduationYear": { "type": "string" },
+        "careerGoal": { "type": "string" },
+        "careerInterests": { "type": "array", "items": { "type": "string" } },
+        "readinessScore": { "type": "number" },
+        "profileCompletion": { "type": "number" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["uid", "fullName", "email", "readinessScore"]
+    },
+    "Assessment": {
+      "title": "Student Assessment Record",
+      "description": "Historical or completed evaluation submission and verified readiness output.",
+      "type": "object",
+      "properties": {
+        "assessmentId": { "type": "string" },
+        "uid": { "type": "string" },
+        "careerGoal": { "type": "string" },
+        "careerInterests": { "type": "object" },
+        "technicalResponses": { "type": "object" },
+        "softSkillResponses": { "type": "object" },
+        "aptitudeResponses": { "type": "object" },
+        "readinessScore": { "type": "number" },
+        "percentileRank": { "type": "number" },
+        "tierLabel": { "type": "string" },
+        "strengths": { "type": "array", "items": { "type": "string" } },
+        "weaknesses": { "type": "array", "items": { "type": "string" } },
+        "skillGaps": { "type": "array", "items": { "type": "object" } },
+        "recommendedRoles": { "type": "array", "items": { "type": "object" } },
+        "completedAt": { "type": "string" }
+      },
+      "required": ["assessmentId", "uid", "readinessScore", "completedAt"]
+    },
+    "SkillProfile": {
+      "title": "Student Skill DNA & Profile",
+      "description": "Calculated Skill DNA matrix, industry benchmark comparisons, and skill gaps.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "skills": { "type": "object" },
+        "overallReadiness": { "type": "number" },
+        "technicalAverage": { "type": "number" },
+        "professionalAverage": { "type": "number" },
+        "totalSkillsCount": { "type": "number" },
+        "criticalGapsCount": { "type": "number" },
+        "tierLabel": { "type": "string" },
+        "lastAssessedAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["uid", "skills", "overallReadiness", "updatedAt"]
+    },
+    "Opportunity": {
+      "title": "Industry Opportunity Record",
+      "description": "Verified job, internship, or project posting created by an industry partner.",
+      "type": "object",
+      "properties": {
+        "opportunityId": { "type": "string" },
+        "title": { "type": "string" },
+        "companyName": { "type": "string" },
+        "companyLogo": { "type": "string" },
+        "opportunityType": { "type": "string", "enum": ["Internship", "Full-Time", "Apprenticeship", "Live Project", "Part-Time"] },
+        "description": { "type": "string" },
+        "location": { "type": "string" },
+        "workMode": { "type": "string", "enum": ["Remote", "Hybrid", "On-site"] },
+        "duration": { "type": "string" },
+        "stipend": { "type": "string" },
+        "applicationDeadline": { "type": "string" },
+        "requiredSkills": { "type": "array", "items": { "type": "object" } },
+        "preferredSkills": { "type": "array", "items": { "type": "object" } },
+        "eligibility": { "type": "string" },
+        "experienceLevel": { "type": "string" },
+        "domain": { "type": "string" },
+        "postedBy": { "type": "string" },
+        "status": { "type": "string", "enum": ["active", "paused", "closed"] },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["opportunityId", "title", "companyName", "opportunityType", "postedBy", "status", "requiredSkills"]
+    },
+    "Application": {
+      "title": "Student Opportunity Application Record",
+      "description": "Submitted application record linking a student to an opportunity with frozen match scoring.",
+      "type": "object",
+      "properties": {
+        "applicationId": { "type": "string" },
+        "opportunityId": { "type": "string" },
+        "studentId": { "type": "string" },
+        "companyName": { "type": "string" },
+        "opportunityTitle": { "type": "string" },
+        "status": { "type": "string", "enum": ["Applied", "Under Review", "Shortlisted", "Interview", "Selected", "Rejected", "Withdrawn"] },
+        "matchScoreAtApplication": { "type": "number" },
+        "matchedSkills": { "type": "array", "items": { "type": "string" } },
+        "skillGaps": { "type": "array", "items": { "type": "string" } },
+        "resumeURL": { "type": "string" },
+        "coverLetter": { "type": "string" },
+        "appliedAt": { "type": "string" },
+        "updatedAt": { "type": "string" },
+        "recruiterNotes": { "type": "string" },
+        "postedBy": { "type": "string" }
+      },
+      "required": ["applicationId", "opportunityId", "studentId", "status", "matchScoreAtApplication", "appliedAt"]
+    },
+    "SkillDemandSnapshot": {
+      "title": "Skill Demand Snapshot",
+      "description": "Historical aggregated industry skill demand snapshot for trend analytics.",
+      "type": "object",
+      "properties": {
+        "snapshotId": { "type": "string" },
+        "generatedAt": { "type": "string" },
+        "totalOpportunities": { "type": "number" },
+        "skills": { "type": "object" },
+        "generatedBy": { "type": "string" },
+        "snapshotLabel": { "type": "string" }
+      },
+      "required": ["snapshotId", "generatedAt", "totalOpportunities", "skills"]
+    },
+    "CollaborationOpportunity": {
+      "title": "Collaboration Opportunity",
+      "description": "Academia-Industry collaboration opportunity created by industry partners.",
+      "type": "object",
+      "properties": {
+        "collaborationId": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "collaborationType": { "type": "string" },
+        "industryId": { "type": "string" },
+        "industryName": { "type": "string" },
+        "targetAudience": { "type": "string" },
+        "requiredExpertise": { "type": "array", "items": { "type": "string" } },
+        "preferredExpertise": { "type": "array", "items": { "type": "string" } },
+        "location": { "type": "string" },
+        "workMode": { "type": "string" },
+        "duration": { "type": "string" },
+        "startDate": { "type": "string" },
+        "endDate": { "type": "string" },
+        "applicationDeadline": { "type": "string" },
+        "capacity": { "type": "number" },
+        "status": { "type": "string" },
+        "createdBy": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["collaborationId", "title", "collaborationType", "industryId", "industryName", "requiredExpertise", "createdBy"]
+    },
+    "CollaborationApplication": {
+      "title": "Collaboration Application",
+      "description": "Faculty application and proposal submitted to an industry collaboration opportunity.",
+      "type": "object",
+      "properties": {
+        "applicationId": { "type": "string" },
+        "collaborationId": { "type": "string" },
+        "academicianId": { "type": "string" },
+        "academicianName": { "type": "string" },
+        "academicianInstitution": { "type": "string" },
+        "industryId": { "type": "string" },
+        "proposal": { "type": "object" },
+        "expertise": { "type": "array", "items": { "type": "string" } },
+        "matchScoreAtApplication": { "type": "number" },
+        "status": { "type": "string" },
+        "submittedAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["applicationId", "collaborationId", "academicianId", "industryId", "status", "submittedAt"]
+    },
+    "CollaborationOutcome": {
+      "title": "Collaboration Outcome",
+      "description": "Recorded outcomes, certifications, and feedback for completed collaborations.",
+      "type": "object",
+      "properties": {
+        "outcomeId": { "type": "string" },
+        "collaborationId": { "type": "string" },
+        "recordedBy": { "type": "string" },
+        "recordedByName": { "type": "string" },
+        "recordedAt": { "type": "string" },
+        "participants": { "type": "number" },
+        "skillsDeveloped": { "type": "array", "items": { "type": "string" } },
+        "certification": { "type": "boolean" }
+      },
+      "required": ["outcomeId", "collaborationId", "recordedBy", "recordedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile document keyed by Firebase Auth UID with owner-only access controls."
+    },
+    "/students/{userId}": {
+      "schema": "StudentProfile",
+      "description": "Student profile document containing academic info and readiness metrics."
+    },
+    "/students/{userId}/assessments/{assessmentId}": {
+      "schema": "Assessment",
+      "description": "Individual assessment submission records for student."
+    },
+    "/students/{userId}/skillProfile/current": {
+      "schema": "SkillProfile",
+      "description": "Current persisted Skill DNA and gap intelligence."
+    },
+    "/academicians/{userId}": {
+      "description": "Academician & Faculty expertise profile with verified industry collaborations."
+    },
+    "/collaborations/{collaborationId}": {
+      "schema": "CollaborationOpportunity",
+      "description": "Academia-Industry collaboration opportunities created by industry partners."
+    },
+    "/collaborations/{collaborationId}/outcomes/{outcomeId}": {
+      "schema": "CollaborationOutcome",
+      "description": "Recorded impact, research outputs, and verification outcomes for completed collaborations."
+    },
+    "/collaborationApplications/{applicationId}": {
+      "schema": "CollaborationApplication",
+      "description": "Faculty proposals and applications for industry collaboration opportunities."
+    },
+    "/opportunities/{opportunityId}": {
+      "schema": "Opportunity",
+      "description": "Publicly discoverable opportunity postings managed by their respective industry creators."
+    },
+    "/applications/{applicationId}": {
+      "schema": "Application",
+      "description": "Application records linking student applicants to opportunities with role-isolated visibility."
+    },
+    "/skillDemandSnapshots/{snapshotId}": {
+      "schema": "SkillDemandSnapshot",
+      "description": "Immutable historical aggregated industry demand snapshot records for longitudinal trend tracking."
+    }
+  }
+}

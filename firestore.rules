@@ -1,0 +1,204 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // User Profile Collection Rules
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if false; // PII protection - no blanket listing of all user accounts
+
+      allow create, update: if isOwner(userId);
+      allow delete: if false; // Prevent accidental account document deletion via client SDK
+    }
+
+    // Role Specific Profiles
+    match /students/{userId} {
+      allow get, create, update: if isOwner(userId);
+      allow list, delete: if false;
+
+      // Student Assessment Records
+      match /assessments/{assessmentId} {
+        allow get, list, create, update: if isOwner(userId);
+        allow delete: if false;
+      }
+
+      // Student Skill DNA / Skill Profile
+      match /skillProfile/{docId} {
+        allow get, list, create, update: if isOwner(userId);
+        allow delete: if false;
+      }
+    }
+
+    match /industries/{userId} {
+      allow get, create, update: if isOwner(userId);
+      allow list, delete: if false;
+    }
+
+    match /academicians/{userId} {
+      allow get, create, update: if isOwner(userId);
+      allow list, delete: if false;
+    }
+
+    match /institutions/{userId} {
+      allow get, create, update: if isOwner(userId);
+      allow list, delete: if false;
+    }
+
+    // Opportunity Collection Rules
+    match /opportunities/{opportunityId} {
+      // Authenticated students, industry recruiters, and academic stakeholders can read opportunities
+      allow read: if isSignedIn();
+
+      // Only the authenticated industry user who posts can create, update, or delete their opportunity
+      allow create: if isSignedIn() && request.resource.data.postedBy == request.auth.uid;
+      allow update: if isSignedIn() && resource.data.postedBy == request.auth.uid && request.resource.data.postedBy == request.auth.uid;
+      allow delete: if isSignedIn() && resource.data.postedBy == request.auth.uid;
+    }
+
+    // Application Collection Rules
+    match /applications/{applicationId} {
+      // Students can only read their own applications; Industry recruiters can only read applications for their posted opportunities
+      allow read: if isSignedIn() && (
+        resource.data.studentId == request.auth.uid ||
+        resource.data.postedBy == request.auth.uid
+      );
+
+      // Authenticated students can create applications where studentId is their own UID
+      allow create: if isSignedIn() && request.resource.data.studentId == request.auth.uid;
+
+      // Update:
+      // 1. Student can only update their own application to status 'Withdrawn'
+      // 2. Industry owner (postedBy) can update status and recruiter notes
+      allow update: if isSignedIn() && (
+        (resource.data.studentId == request.auth.uid && request.resource.data.studentId == request.auth.uid && request.resource.data.status == 'Withdrawn') ||
+        (resource.data.postedBy == request.auth.uid)
+      );
+
+      // Applications cannot be deleted directly to preserve audit history
+      allow delete: if false;
+    }
+
+    // Historical Skill Demand Snapshots Collection Rules
+    match /skillDemandSnapshots/{snapshotId} {
+      // Authenticated users (institutions, industry, academicians, students) can read aggregated demand intelligence
+      allow read: if isSignedIn();
+
+      // Only authenticated users can create a new demand snapshot (cannot overwrite existing snapshots)
+      allow create: if isSignedIn();
+
+      // Historical demand snapshots are immutable audit records - no updates or deletions allowed
+      allow update, delete: if false;
+    }
+
+    // Academia-Industry Collaboration Collection Rules
+    match /collaborations/{collaborationId} {
+      // All authenticated academicians, industry partners, and institutional stakeholders can read collaborations
+      allow read: if isSignedIn();
+
+      // Only the authenticated industry user who creates the opportunity can create, edit, or delete it
+      allow create: if isSignedIn() && (
+        request.resource.data.createdBy == request.auth.uid ||
+        request.resource.data.industryId == request.auth.uid
+      );
+      allow update: if isSignedIn() && (
+        resource.data.createdBy == request.auth.uid ||
+        resource.data.industryId == request.auth.uid
+      );
+      allow delete: if isSignedIn() && (
+        resource.data.createdBy == request.auth.uid ||
+        resource.data.industryId == request.auth.uid
+      );
+
+      // Subcollection: Collaboration Outcomes & Verification
+      match /outcomes/{outcomeId} {
+        allow read: if isSignedIn();
+        // Only the collaboration owner can record or update outcomes
+        allow create, update: if isSignedIn() && (
+          get(/databases/$(database)/documents/collaborations/$(collaborationId)).data.createdBy == request.auth.uid ||
+          get(/databases/$(database)/documents/collaborations/$(collaborationId)).data.industryId == request.auth.uid ||
+          request.resource.data.recordedBy == request.auth.uid
+        );
+        allow delete: if false;
+      }
+    }
+
+    // Collaboration Applications & Proposals Collection Rules
+    match /collaborationApplications/{applicationId} {
+      // Academicians can read their own applications; Industry partners can read applications for their collaborations
+      allow read: if isSignedIn() && (
+        resource.data.academicianId == request.auth.uid ||
+        resource.data.industryId == request.auth.uid
+      );
+
+      // Authenticated faculty/academicians can create applications where academicianId is their own UID
+      allow create: if isSignedIn() && request.resource.data.academicianId == request.auth.uid;
+
+      // Update rules:
+      // 1. Academician can withdraw their application
+      // 2. Industry owner can update review status, notes, and outcomes
+      allow update: if isSignedIn() && (
+        (resource.data.academicianId == request.auth.uid && request.resource.data.academicianId == request.auth.uid && request.resource.data.status == 'Withdrawn') ||
+        (resource.data.industryId == request.auth.uid)
+      );
+
+      allow delete: if false;
+    }
+
+    // Institutional Interventions Collection Rules (Phase 14D-B)
+    match /interventions/{interventionId} {
+      // Authenticated users (students, industry, academicians, institutions) can read interventions
+      allow read: if isSignedIn();
+
+      // Only the owning institution can create interventions
+      allow create: if isSignedIn() && request.resource.data.institutionId == request.auth.uid;
+
+      // Update rules:
+      // 1. Institution owner can update any field
+      // 2. Assigned industry partner can update participation details (assigned mentors count, industry responsibilities)
+      allow update: if isSignedIn() && (
+        resource.data.institutionId == request.auth.uid ||
+        (resource.data.partnerIndustryId == request.auth.uid && request.resource.data.institutionId == resource.data.institutionId)
+      );
+
+      // Interventions cannot be deleted to preserve audit trails and longitudinal accreditation records
+      allow delete: if false;
+    }
+
+    // Intervention Enrollments Collection Rules (Phase 14D-B)
+    match /interventionEnrollments/{enrollmentId} {
+      // Student can read their own enrollment; Institution and assigned Industry can read enrollments for their interventions
+      allow read: if isSignedIn() && (
+        resource.data.studentId == request.auth.uid ||
+        resource.data.institutionId == request.auth.uid
+      );
+
+      // Authenticated student can enroll themselves
+      allow create: if isSignedIn() && request.resource.data.studentId == request.auth.uid;
+
+      // Update rules:
+      // 1. Student can update postSkillLevel, assessmentDate, feedback upon completing assessment
+      // 2. Institution can update status, completionStatus, outcomeScore
+      allow update: if isSignedIn() && (
+        (resource.data.studentId == request.auth.uid && request.resource.data.studentId == request.auth.uid) ||
+        (resource.data.institutionId == request.auth.uid)
+      );
+
+      allow delete: if false;
+    }
+  }
+}
+
