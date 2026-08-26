@@ -20,7 +20,10 @@ import { SkillGapView } from '../components/student/views/SkillGapView';
 import { CareerRoadmapView } from '../components/student/views/CareerRoadmapView';
 import { OpportunitiesView } from '../components/student/views/OpportunitiesView';
 import { ApplicationsView } from '../components/student/views/ApplicationsView';
+import { InternshipWorkspaceView } from '../components/internship/InternshipWorkspaceView';
+import { StudentLearningProgramsView } from '../components/student/learning/StudentLearningProgramsView';
 import { PortfolioView } from '../components/student/views/PortfolioView';
+import { DocumentVaultView } from '../components/student/vault/DocumentVaultView';
 import { StudentInterventionsView } from '../components/student/StudentInterventionsView';
 import { SetuCopilotView } from '../components/copilot/SetuCopilotView';
 import { CareerCoachSection } from '../components/student/CareerCoachSection';
@@ -58,7 +61,9 @@ import {
   Compass,
   Send,
   Briefcase,
-  Zap
+  Zap,
+  GraduationCap,
+  FolderArchive
 } from 'lucide-react';
 
 export const DashboardPage: React.FC = () => {
@@ -95,12 +100,15 @@ export const DashboardPage: React.FC = () => {
     if (path.includes('/career-coach') || path.includes('/coach')) return 'career-coach';
     if (path.includes('/copilot')) return 'copilot';
     if (path.includes('/career-roadmap') || path.includes('/roadmap')) return 'career-roadmap';
+    if (path.includes('/learning-programs') || path.includes('/learning') || path.includes('/programs')) return 'learning-programs';
     if (path.includes('/assessment')) return 'assessment';
     if (path.includes('/skill-gap') || path.includes('/gap')) return 'skill-gap';
     if (path.includes('/skill-dna') || path.includes('/skills')) return 'skill-dna';
     if (path.includes('/opportunities') || path.includes('/careers')) return 'opportunities';
     if (path.includes('/interventions') || path.includes('/intervene')) return 'interventions';
     if (path.includes('/applications')) return 'applications';
+    if (path.includes('/internship') || path.includes('/internships') || path.includes('/lifecycle')) return 'internships';
+    if (path.includes('/vault') || path.includes('/documents') || path.includes('/evidence')) return 'vault';
     if (path.includes('/portfolio') || path.includes('/projects') || path.includes('/credentials')) return 'portfolio';
     return 'dashboard';
   };
@@ -161,12 +169,15 @@ export const DashboardPage: React.FC = () => {
     { id: 'career-coach', label: 'Career Coach', icon: Compass, badge: '30-90 Day Plan' },
     { id: 'copilot', label: 'Setu Copilot', icon: Sparkles, badge: 'AI Copilot' },
     { id: 'career-roadmap', label: 'AI Career Roadmap', icon: MapPin, badge: '78% → 98%' },
+    { id: 'learning-programs', label: 'Industry Learning', icon: GraduationCap, badge: 'Certificates' },
     { id: 'assessment', label: 'Skill Assessment', icon: Target, badge: 'AI Ready' },
     { id: 'skill-dna', label: 'Skill DNA', icon: Dna, badge: '87/100' },
     { id: 'skill-gap', label: 'Skill Gap', icon: GitCompare, badge: 'Action Plan' },
     { id: 'interventions', label: 'Interventions', icon: Zap, badge: 'Skill Boost' },
     { id: 'opportunities', label: 'Opportunities', icon: Compass, badge: '14 Matched' },
     { id: 'applications', label: 'Applications', icon: Send, badge: '6 Active' },
+    { id: 'internships', label: 'Internship Lifecycle', icon: CheckCircle2, badge: 'Active Cohort' },
+    { id: 'vault', label: 'Document Vault', icon: FolderArchive, badge: 'Secure' },
     { id: 'portfolio', label: 'Portfolio', icon: Briefcase }
   ];
 
@@ -312,6 +323,10 @@ export const DashboardPage: React.FC = () => {
             />
           )}
 
+          {activeStudentTab === 'learning-programs' && (
+            <StudentLearningProgramsView />
+          )}
+
           {activeStudentTab === 'assessment' && (
             <SkillAssessmentView
               onStartAssessment={handleOpenAssessment}
@@ -356,6 +371,16 @@ export const DashboardPage: React.FC = () => {
               onSelectApplication={(app) => setSelectedApplication(app)}
               onExploreOpportunities={() => handleStudentTabChange('opportunities')}
             />
+          )}
+
+          {activeStudentTab === 'internships' && (
+            <InternshipWorkspaceView
+              onBack={() => handleStudentTabChange('applications')}
+            />
+          )}
+
+          {activeStudentTab === 'vault' && (
+            <DocumentVaultView />
           )}
 
           {activeStudentTab === 'portfolio' && (

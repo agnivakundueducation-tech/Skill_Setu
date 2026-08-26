@@ -156,11 +156,14 @@ export const ROLE_NAV_ITEMS: Record<UserRole, NavItem[]> = {
     { label: 'Career Coach', path: '/dashboard/student/career-coach', icon: 'Compass', badge: '30-90 Day Plan' },
     { label: 'Setu Copilot', path: '/dashboard/student/copilot', icon: 'Sparkles', badge: 'AI Copilot' },
     { label: 'AI Career Roadmap', path: '/dashboard/student/career-roadmap', icon: 'MapPin', badge: '78% → 98%' },
+    { label: 'Industry Learning', path: '/dashboard/student/learning-programs', icon: 'GraduationCap', badge: 'Certificates' },
     { label: 'Skill Assessment', path: '/dashboard/student/assessment', icon: 'Target', badge: 'AI Ready' },
     { label: 'Skill DNA', path: '/dashboard/student/skill-dna', icon: 'Dna', badge: 'Top 5%' },
     { label: 'Skill Gap Analysis', path: '/dashboard/student/skill-gap', icon: 'GitCompare', badge: 'Action Plan' },
     { label: 'Opportunities', path: '/dashboard/student/opportunities', icon: 'Compass', badge: '14 Matched' },
+    { label: 'Internships Hub', path: '/dashboard/student/internships', icon: 'Award', badge: 'Lifecycle' },
     { label: 'Applications', path: '/dashboard/student/applications', icon: 'Send', badge: '6 Active' },
+    { label: 'Document Vault', path: '/dashboard/student/vault', icon: 'FolderArchive', badge: 'Secure' },
     { label: 'Portfolio', path: '/dashboard/student/portfolio', icon: 'Briefcase' }
   ],
   industry: [

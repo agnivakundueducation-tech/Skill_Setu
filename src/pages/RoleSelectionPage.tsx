@@ -27,7 +27,7 @@ import { sihShowcaseService } from '../services/sihShowcaseService';
 
 export const RoleSelectionPage: React.FC = () => {
   const navigate = useNavigate();
-  const { currentRole, setRole, continueAsDemo } = useAuth();
+  const { currentRole, setRole, continueAsDemo, isAuthenticated } = useAuth();
   const [selectedRole, setSelectedRole] = useState<UserRole>(currentRole || 'student');
 
   const roleKeys: UserRole[] = ['student', 'industry', 'academician', 'institution'];
@@ -38,8 +38,16 @@ export const RoleSelectionPage: React.FC = () => {
 
   const handleProceed = () => {
     setRole(selectedRole);
-    continueAsDemo(selectedRole);
-    navigate(`/dashboard/${selectedRole}`);
+    if (isAuthenticated) {
+      navigate(`/dashboard/${selectedRole}`);
+    } else {
+      navigate('/login', {
+        state: {
+          from: { pathname: `/dashboard/${selectedRole}` },
+          role: selectedRole
+        }
+      });
+    }
   };
 
   const handleStartGuidedShowcase = () => {

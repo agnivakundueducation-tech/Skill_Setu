@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal } from '../ui/Modal';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
@@ -6,6 +6,8 @@ import { Opportunity } from '../../types/student';
 import { useAuth } from '../../context/AuthContext';
 import { applyToOpportunity } from '../../services/applicationService';
 import { calculateOpportunityMatch } from '../../services/matchingService';
+import { documentService } from '../../services/documentService';
+import { VaultDocument } from '../../types/document';
 import { OpportunityRecord } from '../../types/opportunity';
 import {
   CheckCircle2,
@@ -21,7 +23,8 @@ import {
   Clock,
   ArrowRight,
   ExternalLink,
-  AlertCircle
+  AlertCircle,
+  FolderArchive
 } from 'lucide-react';
 
 interface OpportunityApplyModalProps {
@@ -44,9 +47,27 @@ export const OpportunityApplyModal: React.FC<OpportunityApplyModalProps> = ({
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [coverNote, setCoverNote] = useState('');
-  const [resumeType, setResumeType] = useState<'verified-passport' | 'custom-resume'>('verified-passport');
+  const [resumeType, setResumeType] = useState<'verified-passport' | 'vault-resume'>('verified-passport');
+  const [selectedVaultDocId, setSelectedVaultDocId] = useState<string>('');
+  const [vaultResumes, setVaultResumes] = useState<VaultDocument[]>([]);
   const [availability, setAvailability] = useState('Immediate / Next 2 Weeks');
   const [applicationId, setApplicationId] = useState('');
+
+  const isDemoActive = isDemo || !isAuthenticated;
+  const currentStudentId = (isAuthenticated && !isDemo && appUser?.uid) ? appUser.uid : 'usr_std_01';
+
+  useEffect(() => {
+    if (isOpen) {
+      documentService.getStudentDocuments(currentStudentId, { category: 'Resume' }, isDemoActive)
+        .then(res => {
+          if (res.success && res.data && res.data.length > 0) {
+            setVaultResumes(res.data);
+            setSelectedVaultDocId(res.data[0].id);
+          }
+        })
+        .catch(err => console.error('Failed to load vault resumes:', err));
+    }
+  }, [isOpen, currentStudentId, isDemoActive]);
 
   if (!opportunity) return null;
 
@@ -61,11 +82,20 @@ export const OpportunityApplyModal: React.FC<OpportunityApplyModalProps> = ({
     setIsSubmitting(true);
     setErrorMessage(null);
 
-    const studentId = (isAuthenticated && !isDemo && appUser?.uid) ? appUser.uid : 'demo-student-id';
+    const studentId = currentStudentId;
     const studentName = appUser?.displayName || 'Aarav Sharma';
     const studentEmail = appUser?.email || 'student@skillsetu.ai';
     const studentInstitution = (appUser as any)?.institutionName || (appUser as any)?.university || 'Indian Institute of Technology (IIT)';
     const studentDegree = (appUser as any)?.degree || 'B.Tech Computer Science & Engineering';
+
+    // Selected resume URL
+    let chosenResumeURL = 'https://skillsetu.ai/verified-passports/student';
+    if (resumeType === 'vault-resume') {
+      const found = vaultResumes.find(r => r.id === selectedVaultDocId);
+      if (found?.fileURL) {
+        chosenResumeURL = found.fileURL;
+      }
+    }
 
     // Convert Opportunity to OpportunityRecord for the service
     const oppRecord: OpportunityRecord = {
@@ -109,9 +139,9 @@ export const OpportunityApplyModal: React.FC<OpportunityApplyModalProps> = ({
         studentDegree,
         opportunity: oppRecord,
         matchResult,
-        resumeURL: resumeType === 'verified-passport' ? 'https://skillsetu.ai/verified-passports/student' : 'https://skillsetu.ai/resumes/custom_resume.pdf',
+        resumeURL: chosenResumeURL,
         coverLetter: coverNote.trim(),
-        isDemo: isDemo || !isAuthenticated
+        isDemo: isDemoActive
       });
 
       if (res.success && res.data) {
@@ -241,23 +271,91 @@ export const OpportunityApplyModal: React.FC<OpportunityApplyModalProps> = ({
 
           {/* Application Profile Options */}
           <div className="space-y-3 pt-1">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div className="space-y-2">
               <label className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
                 <FileText className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
                 <span>Select Application Profile / Resume</span>
               </label>
-              <div className="flex items-center gap-2 text-xs">
-                <label className="flex items-center gap-1.5 cursor-pointer">
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <label
+                  onClick={() => setResumeType('verified-passport')}
+                  className={`flex items-start gap-2.5 p-3 rounded-xl border text-xs cursor-pointer transition-all ${
+                    resumeType === 'verified-passport'
+                      ? 'border-indigo-600 bg-indigo-50/50 dark:bg-indigo-950/40 text-indigo-950 dark:text-indigo-100 ring-1 ring-indigo-500/20'
+                      : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:border-slate-300'
+                  }`}
+                >
                   <input
                     type="radio"
                     name="resumeType"
                     checked={resumeType === 'verified-passport'}
                     onChange={() => setResumeType('verified-passport')}
-                    className="text-indigo-600 focus:ring-indigo-500"
+                    className="mt-0.5 text-indigo-600 focus:ring-indigo-500"
                   />
-                  <span className="text-slate-700 dark:text-slate-300">SkillSetu Verified Passport (Recommended)</span>
+                  <div>
+                    <span className="font-bold block flex items-center gap-1">
+                      SkillSetu Verified Passport
+                      <Sparkles className="w-3 h-3 text-indigo-600" />
+                    </span>
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                      Live verified Skill DNA profile, assessment badges & verified projects.
+                    </span>
+                  </div>
+                </label>
+
+                <label
+                  onClick={() => setResumeType('vault-resume')}
+                  className={`flex items-start gap-2.5 p-3 rounded-xl border text-xs cursor-pointer transition-all ${
+                    resumeType === 'vault-resume'
+                      ? 'border-indigo-600 bg-indigo-50/50 dark:bg-indigo-950/40 text-indigo-950 dark:text-indigo-100 ring-1 ring-indigo-500/20'
+                      : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:border-slate-300'
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="resumeType"
+                    checked={resumeType === 'vault-resume'}
+                    onChange={() => setResumeType('vault-resume')}
+                    className="mt-0.5 text-indigo-600 focus:ring-indigo-500"
+                  />
+                  <div>
+                    <span className="font-bold block flex items-center gap-1">
+                      Document Vault Resume
+                      <FolderArchive className="w-3 h-3 text-indigo-600" />
+                    </span>
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                      Attach verified ATS resume from your Secure Evidence Vault.
+                    </span>
+                  </div>
                 </label>
               </div>
+
+              {resumeType === 'vault-resume' && (
+                <div className="mt-2 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+                  <label className="text-[11px] font-semibold text-slate-600 dark:text-slate-400 block mb-1">
+                    Choose Vault Document:
+                  </label>
+                  {vaultResumes.length > 0 ? (
+                    <select
+                      value={selectedVaultDocId}
+                      onChange={(e) => setSelectedVaultDocId(e.target.value)}
+                      className="w-full text-xs rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 px-2.5 py-1.5"
+                    >
+                      {vaultResumes.map((doc) => (
+                        <option key={doc.id} value={doc.id}>
+                          {doc.title} ({doc.fileName} — {Math.round(doc.fileSize / 1024)} KB)
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <div className="text-xs text-amber-600 dark:text-amber-400 flex items-center gap-1.5 py-1">
+                      <AlertCircle className="w-3.5 h-3.5" />
+                      <span>No resumes found in Vault. Default Master Resume will be attached.</span>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Availability */}

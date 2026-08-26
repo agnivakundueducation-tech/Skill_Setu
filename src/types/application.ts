@@ -3,6 +3,11 @@ export type ApplicationLifecycleStatus =
   | 'Under Review'
   | 'Shortlisted'
   | 'Interview'
+  | 'Interview Scheduled'
+  | 'Interview Completed'
+  | 'Offer'
+  | 'Accepted'
+  | 'Declined'
   | 'Selected'
   | 'Rejected'
   | 'Withdrawn';
@@ -34,6 +39,9 @@ export interface ApplicationRecord {
   workMode?: string;
   stipend?: string;
   opportunityType?: string;
+  interviewId?: string;
+  offerId?: string;
+  placementId?: string;
 }
 
 export interface ApplicationTimelineEvent {

@@ -84,7 +84,7 @@ export const SkillAssessmentView: React.FC<SkillAssessmentViewProps> = ({
             <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
               SkillSetu AI Adaptive Assessment Engine
               <Badge variant="primary" size="sm">
-                5-Step AI Evaluation
+                6-Step Comprehensive Evaluation
               </Badge>
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400">

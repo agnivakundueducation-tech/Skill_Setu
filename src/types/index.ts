@@ -4,6 +4,9 @@ export * from './application';
 export * from './demand';
 export * from './collaboration';
 export * from './intervention';
+export * from './internship';
+export * from './learningProgram';
+export * from './document';
 
 export interface RoleInfo {
   id: UserRole;

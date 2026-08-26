@@ -21,6 +21,7 @@ import { ProjectsSection } from '../portfolio/ProjectsSection';
 import { CertificationsPortfolioSection } from '../portfolio/CertificationsPortfolioSection';
 import { InternshipsSection } from '../portfolio/InternshipsSection';
 import { AchievementsSection } from '../portfolio/AchievementsSection';
+import { PlacementMilestonesSection } from '../portfolio/PlacementMilestonesSection';
 import { SharePortfolioModal } from '../portfolio/SharePortfolioModal';
 import {
   Share2,
@@ -144,6 +145,11 @@ export const PortfolioView: React.FC<PortfolioViewProps> = ({
       {/* 8. Achievements Section */}
       <section id="achievements" className="scroll-mt-6">
         <AchievementsSection achievements={STUDENT_ACHIEVEMENTS} />
+      </section>
+
+      {/* 9. Verified Placement Milestones Section */}
+      <section id="placements" className="scroll-mt-6">
+        <PlacementMilestonesSection />
       </section>
 
       {/* Floating Back to Top & Share CTA Bar */}

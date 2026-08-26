@@ -54,14 +54,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     });
 
-    // Handle persisted demo mode if previously selected
-    const savedAuth = localStorage.getItem('skillsetu-auth');
-    const savedDemo = localStorage.getItem('skillsetu-demo');
-    if (savedAuth === 'true' && savedDemo === 'true' && !authState.isAuthenticated) {
-      const savedRole = (localStorage.getItem('skillsetu-role') as UserRole) || 'student';
-      authService.continueAsDemo(savedRole);
-    }
-
     return () => unsubscribe();
   }, []);
 

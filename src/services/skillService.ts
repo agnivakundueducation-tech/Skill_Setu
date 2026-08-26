@@ -68,7 +68,8 @@ export interface StudentAssessmentRecord {
   careerInterests: AssessmentFormState['careerInterests'];
   technicalResponses: AssessmentFormState['technicalSkills'];
   softSkillResponses: AssessmentFormState['softSkills'];
-  aptitudeResponses: AssessmentFormState['careerPreferences'];
+  aptitudeResponses?: AssessmentFormState['aptitude'];
+  careerPreferences?: AssessmentFormState['careerPreferences'];
   readinessScore: number;
   percentileRank: number;
   tierLabel: string;
@@ -231,6 +232,9 @@ export function computeSkillProfileFromAssessment(
   const teamCurrent = Math.min(100, Math.max(45, Math.round(((teamVal + reviewVal) / 2) * 0.95)));
   const leadCurrent = Math.min(100, Math.max(40, Math.round(((conflictVal + adaptVal) / 2) * 0.92)));
   const probCurrent = Math.min(100, Math.max(45, Math.round(((probVal + adaptVal) / 2) * 0.96)));
+  const aptitudeCurrent = formState.aptitude?.totalScore !== undefined
+    ? Math.min(100, Math.max(40, formState.aptitude.totalScore))
+    : 80;
 
   const skillsMap: Record<string, PersistedSkillItem> = {};
 
@@ -289,6 +293,11 @@ export function computeSkillProfileFromAssessment(
       id: 'prof-problemsolving',
       current: probCurrent,
       competencies: ['Systematic Root-Cause Diagnosis', 'Decomposition of Ambiguous Issues', 'Trade-off Analysis']
+    },
+    {
+      id: 'prof-aptitude',
+      current: aptitudeCurrent,
+      competencies: ['Quantitative Problem Solving', 'Logical Deduction & Pattern Recognition', 'Verbal Reasoning & Technical Comprehension']
     }
   ];
 
@@ -367,6 +376,22 @@ export function formatPersistedProfileToSkillDna(profile: PersistedSkillProfile)
     else if (skill.currentLevel >= 55) levelLabel = 'Intermediate';
     else levelLabel = 'Novice';
 
+    const evidenceList: SkillDnaItem['evidenceList'] = [];
+    if (skill.skillId === 'prof-aptitude' && skill.currentLevel > 0) {
+      evidenceList.push({
+        id: 'ev-aptitude-assessment',
+        title: 'Cognitive & Aptitude Standardized Evaluation',
+        type: 'assessment',
+        date: new Date(profile.updatedAt).toISOString().split('T')[0],
+        verifiedBy: 'SkillSetu Deterministic Assessment Engine',
+        verificationBadge: 'Standardized Assessment',
+        description: 'Multi-category assessment evaluating Quantitative Aptitude, Logical Reasoning, and Verbal Comprehension.',
+        scoreOrMetric: `${skill.currentLevel}% Score`
+      });
+    }
+
+    const effectiveEvidenceCount = skill.evidenceCount + evidenceList.length;
+
     return {
       id: skill.skillId,
       name: skill.skillName,
@@ -375,15 +400,15 @@ export function formatPersistedProfileToSkillDna(profile: PersistedSkillProfile)
       iconName: skill.iconName || 'Code',
       currentScore: skill.currentLevel,
       verificationScore: skill.verificationScore, // 0 for assessment-based
-      evidenceCount: skill.evidenceCount,
+      evidenceCount: effectiveEvidenceCount,
       industryBenchmark: skill.industryRequiredLevel,
       percentile: Math.min(99, Math.max(50, Math.round(skill.currentLevel * 1.06))),
       level: levelLabel,
       growthChange: Math.max(0, Math.round((skill.currentLevel - 60) * 0.3)),
       description: skill.description || `${skill.skillName} capability benchmarked against industry standard (${skill.industryRequiredLevel}%).`,
       keyCompetencies: skill.keyCompetencies || [],
-      evidenceList: [],
-      verificationStatus: skill.evidenceCount > 0 ? 'verified' : 'in_review'
+      evidenceList,
+      verificationStatus: effectiveEvidenceCount > 0 ? 'verified' : 'in_review'
     };
   });
 

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Modal } from '../../ui/Modal';
 import { Button } from '../../ui/Button';
 import { Badge } from '../../ui/Badge';
@@ -51,6 +52,7 @@ export const ApplicationDetailsDrawer: React.FC<ApplicationDetailsDrawerProps> =
 }) => {
   if (!application) return null;
 
+  const navigate = useNavigate();
   const [isEditingNotes, setIsEditingNotes] = useState(false);
   const [editedNotes, setEditedNotes] = useState(application.notes);
   const [editedNextStep, setEditedNextStep] = useState(application.nextStepTitle || '');
@@ -245,6 +247,39 @@ export const ApplicationDetailsDrawer: React.FC<ApplicationDetailsDrawerProps> =
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* Offer & Active Internship Lifecycle Callout */}
+        {application.currentStage === 'Selected' && (
+          <div className="p-4 rounded-2xl bg-linear-to-r from-emerald-50 to-indigo-50 dark:from-emerald-950/40 dark:to-indigo-950/40 border border-emerald-300 dark:border-emerald-700/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-black">
+                <CheckCircle2 className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="text-xs font-black text-slate-900 dark:text-white flex items-center gap-2">
+                  <span>Selected & Hired!</span>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-200 dark:bg-emerald-800 text-emerald-800 dark:text-emerald-100">
+                    Active Co-Op
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-600 dark:text-slate-300">
+                  Track weekly milestone deliverables, log learning hours, request mentor feedback, and earn verified certification.
+                </p>
+              </div>
+            </div>
+            <Button
+              variant="primary"
+              size="sm"
+              className="text-xs bg-emerald-600 hover:bg-emerald-500 whitespace-nowrap"
+              onClick={() => {
+                onClose();
+                navigate('/dashboard/student/internships');
+              }}
+            >
+              Open Internship Workspace →
+            </Button>
           </div>
         )}
 

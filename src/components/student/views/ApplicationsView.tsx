@@ -6,6 +6,8 @@ import { ApplicationTimelineView } from '../tracking/ApplicationTimelineView';
 import { ApplicationKanbanView } from '../tracking/ApplicationKanbanView';
 import { AddApplicationModal } from '../tracking/AddApplicationModal';
 import { ApplicationDetailsDrawer } from '../tracking/ApplicationDetailsDrawer';
+import { StudentInterviewsTab } from '../tracking/StudentInterviewsTab';
+import { StudentOffersTab } from '../tracking/StudentOffersTab';
 import { useAuth } from '../../../context/AuthContext';
 import {
   getStudentApplications,
@@ -13,10 +15,20 @@ import {
   updateApplicationStatus
 } from '../../../services/applicationService';
 import { ApplicationRecord } from '../../../types/application';
+import {
+  FileSpreadsheet,
+  Calendar,
+  DollarSign,
+  Award,
+  Sparkles,
+  CheckCircle2,
+  TrendingUp
+} from 'lucide-react';
 
 interface ApplicationsViewProps {
   onSelectApplication?: (app: ActiveApplication) => void;
   onExploreOpportunities?: () => void;
+  onNavigateToPassport?: () => void;
 }
 
 const STORAGE_KEY = 'skillsetu_student_applications_v2';
@@ -27,6 +39,11 @@ function mapRecordToActiveApp(rec: ApplicationRecord): ActiveApplication {
     'Under Review': 'Shortlisted',
     'Shortlisted': 'Shortlisted',
     'Interview': 'Interview',
+    'Interview Scheduled': 'Interview',
+    'Interview Completed': 'Interview',
+    'Offer': 'Selected',
+    'Accepted': 'Selected',
+    'Declined': 'Rejected',
     'Selected': 'Selected',
     'Rejected': 'Rejected',
     'Withdrawn': 'Rejected'
@@ -57,8 +74,13 @@ function mapRecordToActiveApp(rec: ApplicationRecord): ActiveApplication {
     totalSteps: 5,
     matchScore: rec.matchScoreAtApplication || 85,
     stipendOrSalary: rec.stipend || '₹45,000 / month',
-    status: rec.status === 'Selected' ? 'offer' : rec.status === 'Rejected' || rec.status === 'Withdrawn' ? 'rejected' : 'active',
-    nextStepTitle: rec.status === 'Withdrawn' ? 'Application Withdrawn' : 'Recruiter Profile Review',
+    status: (rec.status === 'Selected' || rec.status === 'Offer' || rec.status === 'Accepted') ? 'offer' : rec.status === 'Rejected' || rec.status === 'Withdrawn' || rec.status === 'Declined' ? 'rejected' : 'active',
+    nextStepTitle:
+      rec.status === 'Interview Scheduled' ? 'Technical Interview Scheduled' :
+      rec.status === 'Interview Completed' ? 'Evaluation Submitted' :
+      rec.status === 'Offer' ? 'Offer Letter Awaiting Decision' :
+      rec.status === 'Accepted' ? 'Placement Verified' :
+      rec.status === 'Withdrawn' ? 'Application Withdrawn' : 'Recruiter Profile Review',
     nextStepDeadline: 'In Progress',
     notes: rec.recruiterNotes || 'Evaluation performed with deterministic Skill DNA matching.',
     timelineHistory: [
@@ -74,7 +96,7 @@ function mapRecordToActiveApp(rec: ApplicationRecord): ActiveApplication {
       ...(rec.status !== 'Applied' ? [{
         id: `tl-2-${rec.applicationId}`,
         stage: currentStage,
-        title: rec.status === 'Withdrawn' ? 'Application Withdrawn' : `Status Updated to ${rec.status}`,
+        title: rec.status === 'Withdrawn' ? 'Application Withdrawn' : `Status: ${rec.status}`,
         date: new Date(rec.updatedAt || rec.appliedAt).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
         description: rec.recruiterNotes || `Application transitioned to ${rec.status}.`,
         completed: true,
@@ -86,9 +108,13 @@ function mapRecordToActiveApp(rec: ApplicationRecord): ActiveApplication {
 
 export const ApplicationsView: React.FC<ApplicationsViewProps> = ({
   onSelectApplication,
-  onExploreOpportunities
+  onExploreOpportunities,
+  onNavigateToPassport
 }) => {
   const { appUser, isAuthenticated, isDemo } = useAuth();
+
+  // Sub-tab selection: Pipeline vs Interviews Hub vs Offers & Placements
+  const [activeSection, setActiveSection] = useState<'pipeline' | 'interviews' | 'offers'>('pipeline');
   const [viewMode, setViewMode] = useState<'timeline' | 'kanban'>('timeline');
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | ApplicationStatus>('all');
@@ -111,7 +137,7 @@ export const ApplicationsView: React.FC<ApplicationsViewProps> = ({
 
   // Load applications from service
   const loadApplications = useCallback(async () => {
-    const studentId = (isAuthenticated && !isDemo && appUser?.uid) ? appUser.uid : 'demo-student-id';
+    const studentId = (isAuthenticated && !isDemo && appUser?.uid) ? appUser.uid : 'usr_std_01';
     setIsLoading(true);
     try {
       const res = await getStudentApplications(studentId, isDemo || !isAuthenticated);
@@ -170,7 +196,7 @@ export const ApplicationsView: React.FC<ApplicationsViewProps> = ({
 
   // Withdraw application handler
   const handleWithdrawApplication = async (id: string) => {
-    const studentId = (isAuthenticated && !isDemo && appUser?.uid) ? appUser.uid : 'demo-student-id';
+    const studentId = (isAuthenticated && !isDemo && appUser?.uid) ? appUser.uid : 'usr_std_01';
     try {
       await withdrawApplication(id, studentId, isDemo || !isAuthenticated);
       setApplications((prev) =>
@@ -280,35 +306,90 @@ export const ApplicationsView: React.FC<ApplicationsViewProps> = ({
 
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
-      {/* Application Tracking Header & Toolbar */}
-      <ApplicationTrackingHeader
-        viewMode={viewMode}
-        onViewModeChange={setViewMode}
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-        statusFilter={statusFilter}
-        onStatusFilterChange={setStatusFilter}
-        onOpenAddModal={() => setIsAddModalOpen(true)}
-        onExploreOpportunities={onExploreOpportunities || (() => {})}
-        statusCounts={statusCounts}
-        totalCount={applications.length}
-      />
+      {/* Sub-Hub Switcher Tabs */}
+      <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 w-fit">
+        <button
+          onClick={() => setActiveSection('pipeline')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+            activeSection === 'pipeline'
+              ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-xs'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+          }`}
+        >
+          <FileSpreadsheet className="w-3.5 h-3.5 text-indigo-600" />
+          <span>Applications Pipeline</span>
+          <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400">
+            {applications.length}
+          </span>
+        </button>
 
-      {/* Main Views: Timeline View vs Kanban View */}
-      {viewMode === 'timeline' ? (
-        <ApplicationTimelineView
-          applications={filteredApplications}
-          onSelectApplication={handleSelectApp}
-          onUpdateStatus={handleUpdateStatus}
-          onOpenAddModal={() => setIsAddModalOpen(true)}
-        />
-      ) : (
-        <ApplicationKanbanView
-          applications={filteredApplications}
-          onSelectApplication={handleSelectApp}
-          onUpdateStatus={handleUpdateStatus}
-          onOpenAddModal={() => setIsAddModalOpen(true)}
-        />
+        <button
+          onClick={() => setActiveSection('interviews')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+            activeSection === 'interviews'
+              ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-xs'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+          }`}
+        >
+          <Calendar className="w-3.5 h-3.5 text-sky-600" />
+          <span>Interviews Hub</span>
+        </button>
+
+        <button
+          onClick={() => setActiveSection('offers')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+            activeSection === 'offers'
+              ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-xs'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+          }`}
+        >
+          <DollarSign className="w-3.5 h-3.5 text-emerald-600" />
+          <span>Offers & Placements</span>
+        </button>
+      </div>
+
+      {/* Section 1: Pipeline */}
+      {activeSection === 'pipeline' && (
+        <div className="space-y-6">
+          <ApplicationTrackingHeader
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            statusFilter={statusFilter}
+            onStatusFilterChange={setStatusFilter}
+            onOpenAddModal={() => setIsAddModalOpen(true)}
+            onExploreOpportunities={onExploreOpportunities || (() => {})}
+            statusCounts={statusCounts}
+            totalCount={applications.length}
+          />
+
+          {viewMode === 'timeline' ? (
+            <ApplicationTimelineView
+              applications={filteredApplications}
+              onSelectApplication={handleSelectApp}
+              onUpdateStatus={handleUpdateStatus}
+              onOpenAddModal={() => setIsAddModalOpen(true)}
+            />
+          ) : (
+            <ApplicationKanbanView
+              applications={filteredApplications}
+              onSelectApplication={handleSelectApp}
+              onUpdateStatus={handleUpdateStatus}
+              onOpenAddModal={() => setIsAddModalOpen(true)}
+            />
+          )}
+        </div>
+      )}
+
+      {/* Section 2: Interviews Hub */}
+      {activeSection === 'interviews' && (
+        <StudentInterviewsTab onScheduleRefresh={loadApplications} />
+      )}
+
+      {/* Section 3: Offers & Placements */}
+      {activeSection === 'offers' && (
+        <StudentOffersTab onNavigateToPassport={onNavigateToPassport} />
       )}
 
       {/* Add Application Modal */}

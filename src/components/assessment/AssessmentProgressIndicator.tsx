@@ -1,10 +1,10 @@
 import React from 'react';
 import { ASSESSMENT_STEPS } from '../../data/assessmentData';
 import { StepId } from '../../types/assessment';
-import { Check, Compass, Code, Users, Briefcase, Sparkles } from 'lucide-react';
+import { Check, Compass, Code, Users, Brain, Briefcase, Sparkles } from 'lucide-react';
 
 interface AssessmentProgressIndicatorProps {
-  currentStepIndex: number; // 0 to 4
+  currentStepIndex: number; // 0 to 5
   onSelectStep?: (index: number) => void;
   completedSteps?: number[];
 }
@@ -25,6 +25,8 @@ export const AssessmentProgressIndicator: React.FC<AssessmentProgressIndicatorPr
         return Code;
       case 'Users':
         return Users;
+      case 'Brain':
+        return Brain;
       case 'Briefcase':
         return Briefcase;
       case 'Sparkles':
@@ -60,7 +62,7 @@ export const AssessmentProgressIndicator: React.FC<AssessmentProgressIndicatorPr
       </div>
 
       {/* Stepper Buttons for Desktop / Tablet */}
-      <div className="grid grid-cols-5 gap-2 pt-1">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 pt-1">
         {steps.map((step, index) => {
           const Icon = getStepIcon(step.iconName);
           const isCurrent = index === currentStepIndex;

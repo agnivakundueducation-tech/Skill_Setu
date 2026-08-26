@@ -199,6 +199,58 @@ service cloud.firestore {
 
       allow delete: if false;
     }
+
+    // Interview Records Collection Rules (Task 16-E)
+    match /interviews/{interviewId} {
+      // Students can only read their own interviews; Recruiters can read interviews they scheduled
+      allow read: if isSignedIn() && (
+        resource.data.candidateId == request.auth.uid ||
+        resource.data.recruiterId == request.auth.uid
+      );
+
+      // Recruiter who schedules can create
+      allow create: if isSignedIn() && request.resource.data.recruiterId == request.auth.uid;
+
+      // Recruiter can update status, reschedule, or submit evaluation
+      allow update: if isSignedIn() && resource.data.recruiterId == request.auth.uid;
+
+      allow delete: if false;
+    }
+
+    // Offer Records Collection Rules (Task 16-E)
+    match /offers/{offerId} {
+      // Student can read their own offers; Recruiter can read offers they issued
+      allow read: if isSignedIn() && (
+        resource.data.studentId == request.auth.uid ||
+        resource.data.issuedBy == request.auth.uid
+      );
+
+      // Recruiter can issue an offer
+      allow create: if isSignedIn() && request.resource.data.issuedBy == request.auth.uid;
+
+      // Student can respond (Accept / Decline); Recruiter can update / withdraw
+      allow update: if isSignedIn() && (
+        (resource.data.studentId == request.auth.uid && (request.resource.data.status == 'Accepted' || request.resource.data.status == 'Declined')) ||
+        (resource.data.issuedBy == request.auth.uid)
+      );
+
+      allow delete: if false;
+    }
+
+    // Verified Placement Outcomes Collection Rules (Task 16-E)
+    match /placements/{placementId} {
+      // Authenticated students, institutions, and industry recruiters can read verified placement records
+      allow read: if isSignedIn();
+
+      // Placements can be created upon offer acceptance or authorized verification
+      allow create: if isSignedIn() && (
+        request.resource.data.studentId == request.auth.uid ||
+        request.resource.data.verifiedBy == request.auth.uid
+      );
+
+      // Immutable verified audit record
+      allow update, delete: if false;
+    }
   }
 }
 

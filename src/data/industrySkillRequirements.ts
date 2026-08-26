@@ -130,6 +130,16 @@ export const BASELINE_INDUSTRY_REQUIREMENTS: Record<string, IndustrySkillRequire
     marketDemand: 'Very High',
     description: 'Structured root-cause diagnosis, debugging complex incidents, and systematic problem decomposition.',
     iconName: 'Lightbulb'
+  },
+  'prof-aptitude': {
+    skillId: 'prof-aptitude',
+    skillName: 'Aptitude & Analytical Reasoning',
+    category: 'professional',
+    subcategory: 'Quantitative, Logical & Verbal Reasoning',
+    requiredLevel: 80,
+    marketDemand: 'Very High',
+    description: 'Deterministic quantitative reasoning, logical deduction, algorithmic patterns, and reading comprehension.',
+    iconName: 'Brain'
   }
 };
 

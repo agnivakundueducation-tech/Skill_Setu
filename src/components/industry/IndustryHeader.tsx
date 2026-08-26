@@ -42,6 +42,8 @@ export const IndustryHeader: React.FC<IndustryHeaderProps> = ({
     { id: 'collaborations', label: 'Faculty Collaborations Hub', icon: Building2, badge: '14D-A' },
     { id: 'candidates', label: `Candidates & Talent Pool`, icon: Users, badge: shortlistedCount > 0 ? `${shortlistedCount} starred` : undefined },
     { id: 'jobs', label: 'Active Jobs & Internships', icon: Briefcase },
+    { id: 'learning_programs', label: 'Industry Learning Programs', icon: GraduationCap, badge: 'Academy' },
+    { id: 'cohorts', label: 'Intern Cohorts & Mentorship', icon: Users, badge: 'Live Cohort' },
     { id: 'applications', label: 'Applications ATS', icon: FileSpreadsheet },
     { id: 'projects_workshops', label: 'Live Projects & Workshops', icon: FileCode2 }
   ];

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { createOpportunity } from '../../services/opportunityService';
 import {
@@ -23,6 +24,8 @@ import { ApplicationsPipelineSection } from './ApplicationsPipelineSection';
 import { ProjectsAndWorkshopsSection } from './ProjectsAndWorkshopsSection';
 import { IndustryCollaborationsView } from './IndustryCollaborationsView';
 import { IndustryInterventionParticipationView } from './IndustryInterventionParticipationView';
+import { IndustryInternshipCohortView } from '../internship/IndustryInternshipCohortView';
+import { IndustryLearningProgramsView } from './learning/IndustryLearningProgramsView';
 import { PostJobModal } from './modals/PostJobModal';
 import { PostInternshipModal } from './modals/PostInternshipModal';
 import { CreateProjectModal } from './modals/CreateProjectModal';
@@ -393,6 +396,16 @@ export const IndustryDashboardView: React.FC<IndustryDashboardViewProps> = ({
           industryName={appUser?.displayName || 'NovaCore Technologies Inc.'}
           isDemo={isDemo || !isAuthenticated}
         />
+      )}
+
+      {/* Tab: Industry Learning Programs & Skill Development */}
+      {activeTab === 'learning_programs' && (
+        <IndustryLearningProgramsView />
+      )}
+
+      {/* Tab: Intern Cohorts & Mentorship Hub */}
+      {activeTab === 'cohorts' && (
+        <IndustryInternshipCohortView />
       )}
 
       {/* Tab 3: Active Jobs & Internships */}

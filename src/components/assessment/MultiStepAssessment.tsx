@@ -19,6 +19,7 @@ import { AssessmentProgressIndicator } from './AssessmentProgressIndicator';
 import { Step1CareerInterests } from './Step1CareerInterests';
 import { Step2TechnicalSkills } from './Step2TechnicalSkills';
 import { Step3SoftSkills } from './Step3SoftSkills';
+import { Step4AptitudeAssessment } from './Step4AptitudeAssessment';
 import { Step4CareerPreferences } from './Step4CareerPreferences';
 import { Step5AssessmentSummary } from './Step5AssessmentSummary';
 import { AssessmentResultsReport } from './AssessmentResultsReport';
@@ -114,6 +115,20 @@ export const MultiStepAssessment: React.FC<MultiStepAssessmentProps> = ({
     }));
   };
 
+  const handleUpdateAptitude = (updated: Partial<AssessmentFormState['aptitude']>) => {
+    setFormData((prev) => ({
+      ...prev,
+      aptitude: {
+        ...prev.aptitude,
+        ...updated,
+        answers: {
+          ...(prev.aptitude?.answers || {}),
+          ...(updated.answers || {})
+        }
+      }
+    }));
+  };
+
   const handleUpdateStep4 = (updated: Partial<AssessmentFormState['careerPreferences']>) => {
     setFormData((prev) => ({
       ...prev,
@@ -185,7 +200,8 @@ export const MultiStepAssessment: React.FC<MultiStepAssessmentProps> = ({
         careerInterests: targetFormData.careerInterests,
         technicalResponses: targetFormData.technicalSkills,
         softSkillResponses: targetFormData.softSkills,
-        aptitudeResponses: targetFormData.careerPreferences,
+        aptitudeResponses: targetFormData.aptitude,
+        careerPreferences: targetFormData.careerPreferences,
         readinessScore: generatedResult.readinessScore,
         percentileRank: generatedResult.percentileRank,
         tierLabel: generatedResult.tierLabel,
@@ -343,7 +359,7 @@ export const MultiStepAssessment: React.FC<MultiStepAssessmentProps> = ({
                 <Brain className="w-3 h-3 text-indigo-600 dark:text-indigo-400" />
                 Adaptive Skill Evaluation
               </span>
-              <span className="text-xs text-slate-400 font-mono">5 Steps</span>
+              <span className="text-xs text-slate-400 font-mono">6 Steps</span>
             </div>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mt-1">
               SkillSetu Comprehensive Skill & Readiness Assessment
@@ -409,16 +425,24 @@ export const MultiStepAssessment: React.FC<MultiStepAssessmentProps> = ({
           />
         )}
 
-        {/* Step 4: Career Preferences */}
+        {/* Step 4: Aptitude & Cognitive Assessment */}
         {currentStepIndex === 3 && (
+          <Step4AptitudeAssessment
+            data={formData.aptitude}
+            onUpdate={handleUpdateAptitude}
+          />
+        )}
+
+        {/* Step 5: Career Preferences */}
+        {currentStepIndex === 4 && (
           <Step4CareerPreferences
             data={formData.careerPreferences}
             onChange={handleUpdateStep4}
           />
         )}
 
-        {/* Step 5: Summary & Submission */}
-        {currentStepIndex === 4 && (
+        {/* Step 6: Summary & Submission */}
+        {currentStepIndex === 5 && (
           <Step5AssessmentSummary
             formData={formData}
             onEditStep={handleJumpToStep}
