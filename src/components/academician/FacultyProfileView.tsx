@@ -442,3 +442,4 @@ export const FacultyProfileView: React.FC<FacultyProfileViewProps> = ({
     </div>
   );
 };
+
