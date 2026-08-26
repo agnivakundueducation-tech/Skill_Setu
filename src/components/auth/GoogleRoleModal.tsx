@@ -12,7 +12,6 @@ interface GoogleRoleModalProps {
   onSelectRole: (role: UserRole, details: { institution: string; department: string }) => Promise<void>;
   isLoading: boolean;
 }
-
 export const GoogleRoleModal: React.FC<GoogleRoleModalProps> = ({
   isOpen,
   userName,
@@ -142,6 +141,7 @@ export const GoogleRoleModal: React.FC<GoogleRoleModalProps> = ({
             </div>
           </CardContent>
 
+          
           <CardFooter className="pt-2 flex items-center justify-end gap-3">
             <Button
               type="submit"
