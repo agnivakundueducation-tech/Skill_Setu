@@ -429,6 +429,7 @@ export const DashboardPage: React.FC = () => {
                   </div>
                 </div>
 
+                
                 <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
                   {metric.change && (
                     <span
@@ -529,13 +530,11 @@ export const DashboardPage: React.FC = () => {
         onClose={() => setIsAssessmentModalOpen(false)}
         skillName={assessmentSkillName}
       />
-
       <CertificateModal
         isOpen={selectedCertificate !== null}
         onClose={() => setSelectedCertificate(null)}
         certificate={selectedCertificate}
       />
-
       <ApplicationDetailModal
         isOpen={selectedApplication !== null}
         onClose={() => setSelectedApplication(null)}
@@ -548,7 +547,6 @@ export const DashboardPage: React.FC = () => {
         opportunity={selectedOpportunity}
         onNavigateToApplications={() => handleStudentTabChange('applications')}
       />
-
       <Modal
         isOpen={isDemoModalOpen}
         onClose={() => setIsDemoModalOpen(false)}
