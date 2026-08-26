@@ -56,7 +56,6 @@ export interface AptitudeAnswers {
   weaknesses: string[];
   completedAt?: string;
 }
-
 export interface CareerPreferencesAnswers {
   workMode: string;
   companyStage: string;
@@ -64,6 +63,7 @@ export interface CareerPreferencesAnswers {
   primaryCareerDriver: string;
   weeklyUpskillingHours: number; // 2 to 30 hrs
 }
+
 
 export interface AssessmentFormState {
   careerInterests: CareerInterestsAnswers;
@@ -73,12 +73,12 @@ export interface AssessmentFormState {
   careerPreferences: CareerPreferencesAnswers;
 }
 
+
 export interface DimensionScore {
   domain: string;
   score: number; // 0 to 100
   benchmark: number; // 0 to 100
 }
-
 export interface SkillGapItem {
   skill: string;
   category: 'Technical' | 'Architecture' | 'Cloud' | 'Soft Skills' | 'Leadership';
@@ -99,7 +99,6 @@ export interface RecommendedRoleItem {
   keyMatchingSkills: string[];
   growthPotential: string;
 }
-
 export interface AssessmentResult {
   completedAt: string;
   readinessScore: number; // 0 to 100
