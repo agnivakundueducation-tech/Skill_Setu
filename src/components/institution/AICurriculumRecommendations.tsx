@@ -73,7 +73,6 @@ export const AICurriculumRecommendations: React.FC<AICurriculumRecommendationsPr
         );
     }
   };
-
   const getStatusBadge = (status: AICurriculumRecommendation['status']) => {
     switch (status) {
       case 'approved':
@@ -103,7 +102,6 @@ export const AICurriculumRecommendations: React.FC<AICurriculumRecommendationsPr
         );
     }
   };
-
   return (
     <div className="space-y-5">
       {/* Top Banner with AI Engine Trigger */}
