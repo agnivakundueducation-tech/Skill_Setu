@@ -1,10 +1,3 @@
-/**
- * Centralized Firebase Configuration & Client Initialization
- * 
- * Provides safe, resilient initialization of Firebase App, Authentication,
- * Cloud Firestore, and Firebase Storage with automatic diagnostics.
- */
-
 import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
 import { getAuth, Auth } from 'firebase/auth';
 import { initializeFirestore, getFirestore, Firestore, setLogLevel } from 'firebase/firestore';
