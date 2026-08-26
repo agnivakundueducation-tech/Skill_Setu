@@ -132,11 +132,13 @@ export function getFriendlyErrorMessage(code: string, rawMessage?: string): { me
         code
       };
 
-    case 'auth/unauthorized-domain':
+    case 'auth/unauthorized-domain': {
+      const host = typeof window !== 'undefined' ? window.location.hostname : 'preview URL';
       return {
-        message: 'This domain is not authorized in Firebase Authentication.',
+        message: `This domain (${host}) is not yet registered in Firebase Authentication Authorized Domains. You can add "${host}" in Firebase Console > Authentication > Settings > Authorized domains, or continue with Instant Demo Mode.`,
         code
       };
+    }
 
     case 'auth/network-request-failed':
       return {
@@ -210,7 +212,10 @@ export function formatAuthError(error: unknown, context: string = 'Authenticatio
   const rawMsg = error instanceof Error ? error.message : String(error);
   const name = error instanceof Error ? error.name : (typeof error === 'object' && error !== null && 'name' in error ? String((error as any).name) : 'FirebaseError');
 
-  if (context.toLowerCase().includes('auth') || code.startsWith('auth/')) {
+  if (code === 'auth/unauthorized-domain') {
+    const currentHost = typeof window !== 'undefined' ? window.location.hostname : 'preview domain';
+    console.warn(`[SkillSetu Auth] Domain notice: "${currentHost}" is not yet registered in Firebase Authentication Authorized Domains. Add this hostname in Firebase Console (Authentication > Settings > Authorized domains) or use Instant Demo Mode.`);
+  } else if (context.toLowerCase().includes('auth') || code.startsWith('auth/')) {
     console.error(`[SkillSetu Auth] Authentication failed`, {
       code: code !== 'unknown' ? code : (error as any)?.code || 'unknown',
       message: rawMsg,

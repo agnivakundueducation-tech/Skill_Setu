@@ -27,10 +27,21 @@ import {
   Compass
 } from 'lucide-react';
 
+import { useAuth } from '../context/AuthContext';
+import { sihShowcaseService } from '../services/sihShowcaseService';
+
 export const LandingPage: React.FC = () => {
   const navigate = useNavigate();
+  const { continueAsDemo, setRole } = useAuth();
   const [activeRoleTab, setActiveRoleTab] = useState<UserRole>('student');
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
+
+  const handleStartShowcase = () => {
+    sihShowcaseService.resetShowcase();
+    setRole('industry');
+    continueAsDemo('industry');
+    navigate('/dashboard/industry');
+  };
 
   const roleKeys: UserRole[] = ['student', 'industry', 'academician', 'institution'];
   const activeRoleData = ROLES[activeRoleTab];
@@ -112,19 +123,20 @@ export const LandingPage: React.FC = () => {
               size="lg"
               variant="accent"
               rightIcon={ArrowRight}
-              onClick={() => navigate('/roles')}
-              className="w-full sm:w-auto"
+              onClick={handleStartShowcase}
+              className="w-full sm:w-auto bg-linear-to-r from-indigo-600 via-indigo-500 to-sky-500 hover:from-indigo-700 hover:to-sky-600 shadow-lg shadow-indigo-500/25"
             >
-              Get Started with Your Role
+              <Sparkles className="w-5 h-5 mr-1 text-amber-300" />
+              Launch SIH 2026 Showcase (3-5 min)
             </Button>
             <Button
               size="lg"
               variant="outline"
               leftIcon={Laptop}
-              onClick={() => setIsDemoModalOpen(true)}
+              onClick={() => navigate('/roles')}
               className="w-full sm:w-auto"
             >
-              View System Overview
+              Select Stakeholder Role
             </Button>
           </div>
 

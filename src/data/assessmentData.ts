@@ -6,6 +6,7 @@ import {
   SkillGapItem,
   DimensionScore
 } from '../types/assessment';
+import { evaluateAptitudeAnswers } from './aptitudeData';
 
 export const ASSESSMENT_STEPS: AssessmentStepConfig[] = [
   {
@@ -33,8 +34,16 @@ export const ASSESSMENT_STEPS: AssessmentStepConfig[] = [
     iconName: 'Users'
   },
   {
-    id: 'career-preferences',
+    id: 'aptitude-assessment',
     stepNumber: 4,
+    title: 'Cognitive & Aptitude Assessment',
+    shortTitle: 'Aptitude',
+    description: 'Timed multi-category evaluation of Quantitative Aptitude, Logical Reasoning, and Verbal Comprehension.',
+    iconName: 'Brain'
+  },
+  {
+    id: 'career-preferences',
+    stepNumber: 5,
     title: 'Workplace & Career Preferences',
     shortTitle: 'Preferences',
     description: 'Define your desired workplace model, compensation goals, and growth environment.',
@@ -42,7 +51,7 @@ export const ASSESSMENT_STEPS: AssessmentStepConfig[] = [
   },
   {
     id: 'summary',
-    stepNumber: 5,
+    stepNumber: 6,
     title: 'Review & AI Readiness Generation',
     shortTitle: 'Summary',
     description: 'Verify your submitted responses before running the SkillSetu AI Readiness & Gap Engine.',
@@ -83,6 +92,32 @@ export const INITIAL_ASSESSMENT_STATE: AssessmentFormState = {
     stressManagementScore: 8,
     leadershipStyle: 'Collaborative Driver & Quality Champion'
   },
+  aptitude: {
+    answers: {
+      'quant-1': 0,
+      'quant-2': 0,
+      'quant-3': 0,
+      'quant-4': 0,
+      'logic-1': 0,
+      'logic-2': 0,
+      'logic-3': 0,
+      'logic-4': 0,
+      'verbal-1': 0,
+      'verbal-2': 0,
+      'verbal-3': 0,
+      'verbal-4': 0
+    },
+    quantitativeScore: 100,
+    logicalScore: 100,
+    verbalScore: 100,
+    totalScore: 100,
+    strengths: [
+      'High Quantitative Problem Solving & Algorithmic Costing',
+      'Deductive Reasoning & Pattern Sequence Recognition',
+      'Technical Verbal Comprehension & Structural Precision'
+    ],
+    weaknesses: []
+  },
   careerPreferences: {
     workMode: 'Hybrid (1-2 days collaborative)',
     companyStage: 'High-Growth Tech Scaleup (Series B - Pre-IPO)',
@@ -93,11 +128,17 @@ export const INITIAL_ASSESSMENT_STATE: AssessmentFormState = {
 };
 
 /**
- * Mock AI Evaluation Engine
- * Synthesizes user responses across the 4 stages into an intelligent report.
+ * Deterministic AI Evaluation Engine
+ * Synthesizes user responses across all stages including Aptitude into an intelligent report.
  */
 export function generateMockAssessmentResult(formState: AssessmentFormState): AssessmentResult {
-  const { careerInterests, technicalSkills, softSkills, careerPreferences } = formState;
+  const { careerInterests, technicalSkills, softSkills, aptitude, careerPreferences } = formState;
+
+  // Evaluate aptitude answers deterministically
+  const aptitudeEval = evaluateAptitudeAnswers(aptitude?.answers || {});
+  const effectiveAptitudeScore = aptitude?.totalScore !== undefined && Object.keys(aptitude?.answers || {}).length > 0
+    ? aptitudeEval.totalScore
+    : 85; // baseline
 
   // 1. Calculate weighted domain scores (0-100)
   const techScores = [
@@ -125,18 +166,19 @@ export function generateMockAssessmentResult(formState: AssessmentFormState): As
   const stressScore = softSkills.stressManagementScore * 10;
   const learningCommitmentBonus = Math.min(10, Math.round((careerPreferences.weeklyUpskillingHours / 20) * 10));
 
-  // Weighted overall calculation
+  // Weighted overall calculation: Tech 35%, Soft 20%, Aptitude 15%, Practical 15%, Passion 10%, Stress 5%
   const rawScore = Math.round(
-    techAvg * 0.40 +
-    softAvg * 0.25 +
+    techAvg * 0.35 +
+    softAvg * 0.20 +
+    effectiveAptitudeScore * 0.15 +
     practicalScore * 0.15 +
-    passionScore * 0.10 +
-    stressScore * 0.05 +
-    learningCommitmentBonus * 0.5
+    passionScore * 0.08 +
+    stressScore * 0.04 +
+    learningCommitmentBonus * 0.3
   );
 
   const readinessScore = Math.min(99, Math.max(52, rawScore));
-  const percentileRank = Math.min(99, Math.max(65, Math.round(readinessScore * 1.08)));
+  const percentileRank = Math.min(99, Math.max(65, Math.round(readinessScore * 1.06)));
 
   let tierLabel: AssessmentResult['tierLabel'] = 'Enterprise Capable';
   if (readinessScore >= 88) {
@@ -154,8 +196,9 @@ export function generateMockAssessmentResult(formState: AssessmentFormState): As
     { domain: 'System Design & Arch', score: technicalSkills.systemDesignRating * 20, benchmark: 78 },
     { domain: 'Frontend & UI Craft', score: technicalSkills.frontendRating * 20, benchmark: 75 },
     { domain: 'Backend & APIs', score: technicalSkills.backendRating * 20, benchmark: 80 },
-    { domain: 'Cloud & Kubernetes', score: technicalSkills.cloudDevOpsRating * 20, benchmark: 70 },
-    { domain: 'Algorithmic Rigor', score: technicalSkills.dsaRating * 20, benchmark: 72 },
+    { domain: 'Cloud & DevOps', score: technicalSkills.cloudDevOpsRating * 20, benchmark: 70 },
+    { domain: 'Algorithmic & DSA', score: technicalSkills.dsaRating * 20, benchmark: 72 },
+    { domain: 'Aptitude & Cognitive', score: effectiveAptitudeScore, benchmark: 75 },
     { domain: 'Soft Skills & Comms', score: Math.round(softAvg), benchmark: 76 }
   ];
 

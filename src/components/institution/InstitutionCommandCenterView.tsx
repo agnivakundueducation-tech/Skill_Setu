@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import {
   INITIAL_INSTITUTION_METRICS,
@@ -16,6 +16,8 @@ import {
   PlacementTierItem,
   AICurriculumRecommendation
 } from '../../types/institution';
+import { Intervention } from '../../types/intervention';
+import { interventionService } from '../../services/interventionService';
 import { InstitutionHeader } from './InstitutionHeader';
 import { InstitutionMetricsCards } from './InstitutionMetricsCards';
 import { DemandReadinessAnalytics } from './DemandReadinessAnalytics';
@@ -24,6 +26,7 @@ import { AICurriculumRecommendations } from './AICurriculumRecommendations';
 import { PlacementReadinessAnalytics } from './PlacementReadinessAnalytics';
 import { InstitutionCollaborationAnalyticsView } from './InstitutionCollaborationAnalyticsView';
 import { InstitutionalInterventionCenterView } from './InstitutionalInterventionCenterView';
+import { InstitutionReportsView } from './InstitutionReportsView';
 import { SkillDetailModal } from './modals/SkillDetailModal';
 import { CurriculumBlueprintModal } from './modals/CurriculumBlueprintModal';
 import { Card } from '../ui/Card';
@@ -42,7 +45,10 @@ import {
   CheckCircle2,
   AlertTriangle,
   FileSpreadsheet,
-  Download
+  Download,
+  Zap,
+  Building2,
+  FileText
 } from 'lucide-react';
 
 interface InstitutionCommandCenterViewProps {
@@ -64,6 +70,7 @@ export const InstitutionCommandCenterView: React.FC<InstitutionCommandCenterView
   const [semesterData, setSemesterData] = useState<SemesterProgressionHeatmapRow[]>(SEMESTER_PROGRESSION_HEATMAP_DATA);
   const [tiersData, setTiersData] = useState<PlacementTierItem[]>(PLACEMENT_TIERS_DATA);
   const [recommendations, setRecommendations] = useState<AICurriculumRecommendation[]>(INITIAL_AI_RECOMMENDATIONS);
+  const [interventions, setInterventions] = useState<Intervention[]>([]);
 
   // Modals & Inspection State
   const [selectedSkillForDetail, setSelectedSkillForDetail] = useState<SkillDemandReadinessItem | null>(null);
@@ -71,6 +78,20 @@ export const InstitutionCommandCenterView: React.FC<InstitutionCommandCenterView
   const [isAiAuditing, setIsAiAuditing] = useState(false);
   const [auditSuccessBanner, setAuditSuccessBanner] = useState(false);
   const [targetSkillFilterForAi, setTargetSkillFilterForAi] = useState<string>('all');
+
+  // Load interventions on mount or context change
+  useEffect(() => {
+    loadInterventionsData();
+  }, [isDemo, isAuthenticated, appUser]);
+
+  const loadInterventionsData = async () => {
+    const institutionId = appUser?.institutionId || 'inst_nit';
+    const isDemoMode = isDemo || !isAuthenticated;
+    const res = await interventionService.getInterventions({ institutionId, isDemo: isDemoMode });
+    if (res.success && res.data) {
+      setInterventions(res.data);
+    }
+  };
 
   // Handlers
   const handleUpdateRecommendationStatus = (
@@ -97,7 +118,6 @@ export const InstitutionCommandCenterView: React.FC<InstitutionCommandCenterView
   };
 
   const handleExportReport = () => {
-    // Generate a simple CSV/JSON download simulation
     const reportData = {
       institution: 'Apex Institute of Technology & Research',
       academicYear: selectedCohort,
@@ -167,6 +187,101 @@ export const InstitutionCommandCenterView: React.FC<InstitutionCommandCenterView
       {/* TAB 1: Command Center Overview */}
       {activeTab === 'command_center' && (
         <div className="space-y-6">
+          {/* Institutional Action Center (Step 11) */}
+          <Card className="p-5 bg-linear-to-r from-amber-500/10 via-indigo-500/10 to-transparent border border-amber-500/20 dark:border-amber-500/10 rounded-2xl">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="p-1 rounded-md bg-amber-500/20 text-amber-700 dark:text-amber-300">
+                    <Zap className="w-4 h-4" />
+                  </span>
+                  <h3 className="font-bold text-sm text-slate-900 dark:text-white">
+                    Institution Action Center & Critical Alerts
+                  </h3>
+                  <Badge variant="warning" size="sm">4 Priority Actions</Badge>
+                </div>
+                <p className="text-xs text-slate-600 dark:text-slate-400">
+                  Real-time intelligence signals requiring academic council or placement intervention.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setActiveTab('intervention_center')}
+                  className="text-xs border-amber-300 dark:border-amber-700 hover:bg-amber-100/50"
+                >
+                  <Zap className="w-3.5 h-3.5 mr-1 text-amber-600" />
+                  Launch Skill Intervention
+                </Button>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={() => setActiveTab('reports')}
+                  className="text-xs bg-amber-600 hover:bg-amber-500"
+                >
+                  <FileText className="w-3.5 h-3.5 mr-1" />
+                  Accreditation Report
+                </Button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-4 pt-3 border-t border-slate-200/60 dark:border-slate-800 text-xs">
+              <div
+                onClick={() => setActiveTab('intervention_center')}
+                className="p-3 rounded-xl bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 cursor-pointer hover:border-amber-400 transition-all space-y-1"
+              >
+                <div className="font-bold text-slate-900 dark:text-white flex items-center justify-between">
+                  <span>Cloud & Distributed Gaps</span>
+                  <span className="text-rose-600 font-black">35 pt deficit</span>
+                </div>
+                <p className="text-[11px] text-slate-500 line-clamp-2">
+                  48% industry demand vs 35% student readiness. Recommended: Weekend hands-on workshop.
+                </p>
+              </div>
+
+              <div
+                onClick={() => setActiveTab('ai_recommendations')}
+                className="p-3 rounded-xl bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 cursor-pointer hover:border-amber-400 transition-all space-y-1"
+              >
+                <div className="font-bold text-slate-900 dark:text-white flex items-center justify-between">
+                  <span>Curriculum Coverage</span>
+                  <span className="text-amber-600 font-black">3 gaps</span>
+                </div>
+                <p className="text-[11px] text-slate-500 line-clamp-2">
+                  Docker and SOC Operations have 0% formal syllabus coverage. Update curriculum blueprints.
+                </p>
+              </div>
+
+              <div
+                onClick={() => setActiveTab('demand_readiness')}
+                className="p-3 rounded-xl bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 cursor-pointer hover:border-amber-400 transition-all space-y-1"
+              >
+                <div className="font-bold text-slate-900 dark:text-white flex items-center justify-between">
+                  <span>Assessment Target</span>
+                  <span className="text-sky-600 font-black">85.8% Complete</span>
+                </div>
+                <p className="text-[11px] text-slate-500 line-clamp-2">
+                  4,120 of 4,800 students assessed. EEE and ECE departments have 14% remaining.
+                </p>
+              </div>
+
+              <div
+                onClick={() => setActiveTab('intervention_center')}
+                className="p-3 rounded-xl bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 cursor-pointer hover:border-amber-400 transition-all space-y-1"
+              >
+                <div className="font-bold text-slate-900 dark:text-white flex items-center justify-between">
+                  <span>Industry Co-Mentorship</span>
+                  <span className="text-emerald-600 font-black">2 Partners</span>
+                </div>
+                <p className="text-[11px] text-slate-500 line-clamp-2">
+                  NovaCore and CyberGuard active. 1 co-mentored program pending outcome evaluation.
+                </p>
+              </div>
+            </div>
+          </Card>
+
           {/* Main 2-Column Showcase: Demand vs Readiness Snapshot + AI Priority Proposals */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
             {/* Left: Demand vs Readiness Analytics Snapshot */}
@@ -355,12 +470,13 @@ export const InstitutionCommandCenterView: React.FC<InstitutionCommandCenterView
         </div>
       )}
 
-      {/* TAB: Institutional Intervention Center (Phase 14D-B) */}
+      {/* TAB: Institutional Intervention Center (Phase 14D-B & 15-D-1) */}
       {activeTab === 'intervention_center' && (
         <div className="space-y-4">
           <InstitutionalInterventionCenterView
             institutionId={appUser?.institutionId || 'inst_nit'}
             isDemo={isDemo || !isAuthenticated}
+            onNavigateTab={setActiveTab}
           />
         </div>
       )}
@@ -415,6 +531,24 @@ export const InstitutionCommandCenterView: React.FC<InstitutionCommandCenterView
       {activeTab === 'placement_analytics' && (
         <div className="space-y-4">
           <PlacementReadinessAnalytics metrics={metrics} tiers={tiersData} />
+        </div>
+      )}
+
+      {/* TAB 6: Reports & Accreditation (Step 12) */}
+      {activeTab === 'reports' && (
+        <div className="space-y-4">
+          <InstitutionReportsView
+            metrics={metrics}
+            skillsData={skillsData}
+            departmentData={departmentData}
+            recommendations={recommendations}
+            tiersData={tiersData}
+            interventions={interventions}
+            academicYear={selectedCohort}
+            selectedDepartment={selectedDepartment}
+            institutionName={appUser?.displayName || 'Apex Institute of Technology & Research'}
+            isDemo={isDemo || !isAuthenticated}
+          />
         </div>
       )}
 

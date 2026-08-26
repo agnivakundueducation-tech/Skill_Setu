@@ -12,6 +12,7 @@ import { UserRole } from '../../types';
 import { DynamicIcon } from '../common/IconRenderer';
 import { Check, Search, Sparkles, ArrowRight } from 'lucide-react';
 import { SetuCopilotWidget } from '../copilot/SetuCopilotWidget';
+import { SihDemoJourneyBanner } from '../showcase/SihDemoJourneyBanner';
 
 export const DashboardLayout: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -20,7 +21,7 @@ export const DashboardLayout: React.FC = () => {
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const { currentRole, setRole } = useAuth();
+  const { currentRole, setRole, isDemo } = useAuth();
   const navigate = useNavigate();
 
   const handleSelectRole = (role: UserRole) => {
@@ -55,6 +56,9 @@ export const DashboardLayout: React.FC = () => {
         />
 
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
+          {/* Top-Level SIH 2026 Demo Journey Banner */}
+          {isDemo && <SihDemoJourneyBanner />}
+
           <Outlet />
         </main>
       </div>

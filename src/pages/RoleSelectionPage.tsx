@@ -23,6 +23,8 @@ import {
   Users
 } from 'lucide-react';
 
+import { sihShowcaseService } from '../services/sihShowcaseService';
+
 export const RoleSelectionPage: React.FC = () => {
   const navigate = useNavigate();
   const { currentRole, setRole, continueAsDemo } = useAuth();
@@ -38,6 +40,13 @@ export const RoleSelectionPage: React.FC = () => {
     setRole(selectedRole);
     continueAsDemo(selectedRole);
     navigate(`/dashboard/${selectedRole}`);
+  };
+
+  const handleStartGuidedShowcase = () => {
+    sihShowcaseService.resetShowcase();
+    setRole('industry');
+    continueAsDemo('industry');
+    navigate('/dashboard/industry');
   };
 
   const activeRoleData = ROLES[selectedRole];
@@ -70,6 +79,36 @@ export const RoleSelectionPage: React.FC = () => {
 
       {/* Main Role Grid */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col justify-center">
+        {/* SIH Showcase Fast Track Banner */}
+        <div className="mb-8 p-4 rounded-2xl bg-linear-to-r from-indigo-900/90 via-slate-900 to-indigo-950 text-white border border-indigo-500/40 shadow-lg flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-indigo-500/20 text-amber-400 flex items-center justify-center font-bold shrink-0 border border-indigo-400/30">
+              <Sparkles className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-400/30">
+                  SIH 2026 Recommended
+                </span>
+                <span className="text-xs text-indigo-200">9 Connected Steps</span>
+              </div>
+              <h3 className="text-sm font-bold text-white mt-0.5">
+                Guided Cross-Role Showcase (3–5 Min Evaluation Journey)
+              </h3>
+            </div>
+          </div>
+
+          <Button
+            size="sm"
+            variant="accent"
+            rightIcon={ArrowRight}
+            onClick={handleStartGuidedShowcase}
+            className="w-full sm:w-auto bg-linear-to-r from-indigo-600 to-sky-500 hover:from-indigo-700 hover:to-sky-600 shrink-0"
+          >
+            Launch Guided Showcase
+          </Button>
+        </div>
+
         <div className="text-center max-w-3xl mx-auto mb-10">
           <Badge variant="primary" size="md" className="mb-3">
             Persona Gateway

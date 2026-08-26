@@ -110,6 +110,24 @@ export const SetuCopilotChat: React.FC<SetuCopilotChatProps> = ({
     setMessages([getGreetingForRole(effectiveRole)]);
   }, [effectiveRole]);
 
+  // Handle external prompts dispatched from showcase or banners
+  useEffect(() => {
+    const handleCustomPrompt = (e: any) => {
+      if (e.detail?.prompt) {
+        if (e.detail.autoSend) {
+          handleSendMessage(e.detail.prompt);
+        } else {
+          setInputText(e.detail.prompt);
+        }
+      }
+    };
+
+    window.addEventListener('setu-copilot-prompt' as any, handleCustomPrompt);
+    return () => {
+      window.removeEventListener('setu-copilot-prompt' as any, handleCustomPrompt);
+    };
+  }, [effectiveRole, effectiveUid, effectiveIsDemo, messages]);
+
   const handleSendMessage = async (textToSend?: string) => {
     const query = (textToSend || inputText).trim();
     if (!query || isTyping) return;

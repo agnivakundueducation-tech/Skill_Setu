@@ -17,7 +17,8 @@ import {
   Calendar,
   CheckCircle2,
   Building2,
-  Zap
+  Zap,
+  FileText
 } from 'lucide-react';
 
 interface InstitutionHeaderProps {
@@ -50,7 +51,8 @@ export const InstitutionHeader: React.FC<InstitutionHeaderProps> = ({
     { id: 'demand_readiness', label: 'Demand vs Readiness Analytics', icon: BarChart3, badge: '5 Core Skills' },
     { id: 'skill_heatmaps', label: 'Competency Heatmaps', icon: Grid3X3 },
     { id: 'ai_recommendations', label: 'AI Curriculum Recommendations', icon: Lightbulb, badge: 'AI Engine' },
-    { id: 'placement_analytics', label: 'Placement & Internships Funnel', icon: TrendingUp }
+    { id: 'placement_analytics', label: 'Placement & Internships Funnel', icon: TrendingUp },
+    { id: 'reports', label: 'Reports & Accreditation', icon: FileText, badge: 'OBE' }
   ];
 
   return (

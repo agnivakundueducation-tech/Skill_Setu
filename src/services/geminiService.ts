@@ -57,8 +57,8 @@ export class GeminiService {
    */
   private initClient(): void {
     // In production with backend proxy, requests are routed to /api/copilot/chat
-    // If client-side direct key is provided, we can connect directly
-    if (this.config.apiKey || process.env.GEMINI_API_KEY) {
+    // Direct client access is only initialized if a client-side API key was explicitly configured
+    if (this.config.apiKey) {
       this.isClientReady = true;
     }
   }

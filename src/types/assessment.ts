@@ -1,4 +1,10 @@
-export type StepId = 'career-interests' | 'technical-skills' | 'soft-skills' | 'career-preferences' | 'summary';
+export type StepId =
+  | 'career-interests'
+  | 'technical-skills'
+  | 'soft-skills'
+  | 'aptitude-assessment'
+  | 'career-preferences'
+  | 'summary';
 
 export interface AssessmentStepConfig {
   id: StepId;
@@ -40,6 +46,17 @@ export interface SoftSkillsAnswers {
   leadershipStyle: string;
 }
 
+export interface AptitudeAnswers {
+  answers: Record<string, number>; // questionId -> selected option index
+  quantitativeScore: number; // 0 to 100
+  logicalScore: number; // 0 to 100
+  verbalScore: number; // 0 to 100
+  totalScore: number; // 0 to 100
+  strengths: string[];
+  weaknesses: string[];
+  completedAt?: string;
+}
+
 export interface CareerPreferencesAnswers {
   workMode: string;
   companyStage: string;
@@ -52,6 +69,7 @@ export interface AssessmentFormState {
   careerInterests: CareerInterestsAnswers;
   technicalSkills: TechnicalSkillsAnswers;
   softSkills: SoftSkillsAnswers;
+  aptitude: AptitudeAnswers;
   careerPreferences: CareerPreferencesAnswers;
 }
 
@@ -88,6 +106,13 @@ export interface AssessmentResult {
   percentileRank: number; // e.g. 96
   tierLabel: 'Tier-1 Industry Ready' | 'Enterprise Capable' | 'Foundation Building' | 'High-Growth Contender';
   executiveSummary: string;
+  aptitudeScore?: number;
+  quantitativeScore?: number;
+  logicalScore?: number;
+  verbalScore?: number;
+  aptitudeStrengths?: string[];
+  aptitudeWeaknesses?: string[];
+  aptitudeCompletedAt?: string;
   dimensionScores: DimensionScore[];
   strengths: {
     title: string;

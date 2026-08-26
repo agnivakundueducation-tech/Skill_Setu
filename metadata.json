@@ -1,6 +1,6 @@
 {
   "name": "SkillSetu AI",
-  "description": "Enterprise Skill & Career Platform featuring Phase 15-B Gemini-Powered Contextual Intelligence Layer for Setu AI with strict platform grounding, deterministic fallback, multi-role intelligence, and actionable recommendations.",
+  "description": "Enterprise Cross-Role Skill & Career Ecosystem featuring SIH 2026 9-Step Showcase Journey (15-E), Institution Intelligence (15-D-1), Academician Intelligence (15-D-2), Industry Intelligence (15-D-3), Ecosystem Integration (15-D-4), and closed-loop Career Passport verification.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

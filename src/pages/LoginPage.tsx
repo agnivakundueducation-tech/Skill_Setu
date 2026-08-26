@@ -25,7 +25,9 @@ import {
   Building,
   GraduationCap,
   Loader2,
-  RefreshCw
+  RefreshCw,
+  Copy,
+  Check
 } from 'lucide-react';
 
 export const LoginPage: React.FC = () => {
@@ -59,6 +61,7 @@ export const LoginPage: React.FC = () => {
   const [isRetryingProfile, setIsRetryingProfile] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [diagnosticCode, setDiagnosticCode] = useState<string | null>(null);
+  const [copiedHost, setCopiedHost] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [showGoogleRoleModal, setShowGoogleRoleModal] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
@@ -435,8 +438,24 @@ export const LoginPage: React.FC = () => {
                     <div className="flex-1">
                       <p className="font-medium text-rose-800 dark:text-rose-200">{errorMessage}</p>
                       {diagnosticCode && (
-                        <div className="mt-1 text-[11px] font-mono text-rose-600 dark:text-rose-400/90 bg-rose-100/70 dark:bg-rose-900/40 px-2 py-0.5 rounded-md w-fit border border-rose-200/80 dark:border-rose-800/60">
-                          Diagnostic code: {diagnosticCode}
+                        <div className="mt-1 flex flex-wrap items-center gap-2">
+                          <div className="text-[11px] font-mono text-rose-600 dark:text-rose-400/90 bg-rose-100/70 dark:bg-rose-900/40 px-2 py-0.5 rounded-md w-fit border border-rose-200/80 dark:border-rose-800/60">
+                            Diagnostic code: {diagnosticCode}
+                          </div>
+                          {diagnosticCode === 'auth/unauthorized-domain' && typeof window !== 'undefined' && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                navigator.clipboard?.writeText(window.location.hostname);
+                                setCopiedHost(true);
+                                setTimeout(() => setCopiedHost(false), 2000);
+                              }}
+                              className="inline-flex items-center gap-1 text-[11px] font-medium text-rose-800 dark:text-rose-200 bg-rose-200/60 dark:bg-rose-900/60 px-2 py-0.5 rounded-md hover:bg-rose-300/60 transition-colors"
+                            >
+                              {copiedHost ? <Check className="w-3 h-3 text-emerald-600 dark:text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                              <span>{copiedHost ? 'Copied Hostname' : 'Copy Hostname for Firebase Console'}</span>
+                            </button>
+                          )}
                         </div>
                       )}
                     </div>

@@ -13,7 +13,8 @@ import {
   CheckCircle2,
   Brain,
   ShieldCheck,
-  Zap
+  Zap,
+  Calculator
 } from 'lucide-react';
 
 interface Step5AssessmentSummaryProps {
@@ -29,7 +30,7 @@ export const Step5AssessmentSummary: React.FC<Step5AssessmentSummaryProps> = ({
   onSubmit,
   isAnalyzing
 }) => {
-  const { careerInterests, technicalSkills, softSkills, careerPreferences } = formData;
+  const { careerInterests, technicalSkills, softSkills, aptitude, careerPreferences } = formData;
 
   return (
     <div className="space-y-6">
@@ -40,14 +41,14 @@ export const Step5AssessmentSummary: React.FC<Step5AssessmentSummaryProps> = ({
             <div className="flex items-center gap-2">
               <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/40 text-indigo-200 border border-indigo-400/30 flex items-center gap-1">
                 <Sparkles className="w-3 h-3 text-indigo-300" />
-                Step 5 of 5 • Pre-Flight Verification
+                Step 6 of 6 • Pre-Flight Verification
               </span>
             </div>
             <h3 className="text-lg font-bold text-white">
               Assessment Summary & Readiness Synthesis
             </h3>
             <p className="text-xs text-indigo-200/80 max-w-2xl leading-relaxed">
-              Review your responses below. Once submitted, our AI engine will generate your multidimensional Career Readiness Score, uncover hidden strengths, benchmark skill gaps, and match tailored high-growth roles.
+              Review your responses below. Once submitted, our deterministic assessment engine will synthesize your Career Readiness Score, benchmark skill gaps, evaluate aptitude competencies, and match verified roles.
             </p>
           </div>
 
@@ -135,7 +136,7 @@ export const Step5AssessmentSummary: React.FC<Step5AssessmentSummaryProps> = ({
                   <Code2 className="w-4 h-4" />
                 </div>
                 <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider">
-                  2. Technical Skills & Architecture
+                  2. Technical Skills & Stack
                 </h4>
               </div>
               <Button
@@ -247,16 +248,16 @@ export const Step5AssessmentSummary: React.FC<Step5AssessmentSummaryProps> = ({
           </div>
         </div>
 
-        {/* Step 4 Summary */}
+        {/* Step 4: Aptitude Summary */}
         <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-3 flex flex-col justify-between">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-amber-50 dark:bg-amber-950/70 text-amber-600 dark:text-amber-400 flex items-center justify-center">
-                  <Briefcase className="w-4 h-4" />
+                <div className="w-7 h-7 rounded-lg bg-purple-50 dark:bg-purple-950/70 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+                  <Brain className="w-4 h-4" />
                 </div>
                 <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider">
-                  4. Preferences & Growth
+                  4. Aptitude & Reasoning
                 </h4>
               </div>
               <Button
@@ -271,30 +272,78 @@ export const Step5AssessmentSummary: React.FC<Step5AssessmentSummaryProps> = ({
             </div>
 
             <div className="space-y-2 text-xs">
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <span className="text-slate-400 text-[10px] block">Work Mode:</span>
-                  <span className="font-semibold text-slate-700 dark:text-slate-300">
-                    {careerPreferences.workMode}
-                  </span>
+              <div className="flex items-center justify-between">
+                <span className="text-slate-400 text-[11px]">Cognitive Aptitude Score:</span>
+                <Badge variant="accent" size="sm">
+                  {aptitude?.totalScore !== undefined ? `${aptitude.totalScore}% Verified` : '85% Baseline'}
+                </Badge>
+              </div>
+
+              <div className="grid grid-cols-3 gap-1.5 pt-1 text-[11px]">
+                <div className="p-1.5 bg-slate-50 dark:bg-slate-800/60 rounded-lg text-center">
+                  <span className="text-slate-400 text-[10px] block">Quantitative</span>
+                  <span className="font-bold text-sky-600 dark:text-sky-400">{aptitude?.quantitativeScore ?? 100}%</span>
                 </div>
-                <div>
-                  <span className="text-slate-400 text-[10px] block">Target Band:</span>
-                  <span className="font-semibold text-emerald-600 dark:text-emerald-400">
-                    {careerPreferences.compensationBand}
-                  </span>
+                <div className="p-1.5 bg-slate-50 dark:bg-slate-800/60 rounded-lg text-center">
+                  <span className="text-slate-400 text-[10px] block">Logical</span>
+                  <span className="font-bold text-emerald-600 dark:text-emerald-400">{aptitude?.logicalScore ?? 100}%</span>
+                </div>
+                <div className="p-1.5 bg-slate-50 dark:bg-slate-800/60 rounded-lg text-center">
+                  <span className="text-slate-400 text-[10px] block">Verbal</span>
+                  <span className="font-bold text-amber-600 dark:text-amber-400">{aptitude?.verbalScore ?? 100}%</span>
                 </div>
               </div>
 
-              <div>
-                <span className="text-slate-400 text-[10px] block">Target Company Maturity:</span>
-                <span className="font-semibold text-slate-700 dark:text-slate-300 block truncate">
-                  {careerPreferences.companyStage}
+              {aptitude?.strengths && aptitude.strengths.length > 0 && (
+                <div className="pt-1 border-t border-slate-100 dark:border-slate-800">
+                  <span className="text-slate-400 text-[10px] block">Key Strength:</span>
+                  <span className="font-semibold text-indigo-600 dark:text-indigo-400 text-[11px] block truncate">
+                    {aptitude.strengths[0]}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Step 5: Preferences Summary */}
+        <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-3 flex flex-col justify-between md:col-span-2">
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-amber-50 dark:bg-amber-950/70 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+                  <Briefcase className="w-4 h-4" />
+                </div>
+                <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider">
+                  5. Workplace Preferences & Goals
+                </h4>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                leftIcon={Edit3}
+                className="text-xs text-indigo-600 dark:text-indigo-400 p-1.5 h-auto"
+                onClick={() => onEditStep(4)}
+              >
+                Edit
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+              <div className="p-2.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl">
+                <span className="text-slate-400 text-[10px] block">Work Mode</span>
+                <span className="font-semibold text-slate-700 dark:text-slate-300">
+                  {careerPreferences.workMode}
                 </span>
               </div>
-
-              <div className="pt-1 border-t border-slate-100 dark:border-slate-800">
-                <span className="text-slate-400 text-[10px] block">Weekly Upskilling Dedication:</span>
+              <div className="p-2.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl">
+                <span className="text-slate-400 text-[10px] block">Target Compensation</span>
+                <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                  {careerPreferences.compensationBand}
+                </span>
+              </div>
+              <div className="p-2.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl">
+                <span className="text-slate-400 text-[10px] block">Weekly Upskilling</span>
                 <span className="font-bold text-indigo-600 dark:text-indigo-400">
                   {careerPreferences.weeklyUpskillingHours} Hours / Week
                 </span>
@@ -312,7 +361,7 @@ export const Step5AssessmentSummary: React.FC<Step5AssessmentSummaryProps> = ({
             <span className="font-bold text-slate-900 dark:text-slate-100">
               Ready for Evaluation.
             </span>{' '}
-            All required modules completed. Ready to synthesize report.
+            All 6 assessment sections completed. Ready to generate verified readiness index.
           </div>
         </div>
 
@@ -330,3 +379,4 @@ export const Step5AssessmentSummary: React.FC<Step5AssessmentSummaryProps> = ({
     </div>
   );
 };
+
