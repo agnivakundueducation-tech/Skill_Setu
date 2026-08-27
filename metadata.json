@@ -1,0 +1,6 @@
+{
+  "name": "SkillSetu AI",
+  "description": "SkillSetu AI: Unified National Skill & Career Ecosystem featuring SIH 2026 9-Step Showcase Journey, Complete Placement & Recruitment Lifecycle (ATS, Interviews, Evaluations, Binding Offers, Cryptographically Verified Placement Outcomes), Secure Document Vault (16-D), Institution Intelligence, Academician Intelligence, Industry Intelligence, and closed-loop Career Passport verification.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

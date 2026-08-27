@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-primary: #4f46e5;
+    --color-primary-hover: #4338ca;
+    --color-surface-light: #ffffff;
+    --color-surface-subtle-light: #f8fafc;
+    --color-border-light: #e2e8f0;
+    --color-text-primary-light: #0f172a;
+    --color-text-secondary-light: #475569;
+    --color-text-muted-light: #94a3b8;
+
+    --ai-glow: rgba(99, 102, 241, 0.15);
+    --student-accent: #6366f1;
+    --industry-accent: #10b981;
+    --academician-accent: #0ea5e9;
+    --institution-accent: #f59e0b;
+  }
+
+  .dark {
+    --color-surface-dark: #090d16;
+    --color-surface-subtle-dark: #0f172a;
+    --color-border-dark: #1e293b;
+    --color-text-primary-dark: #f8fafc;
+    --color-text-secondary-dark: #cbd5e1;
+    --color-text-muted-dark: #64748b;
+    --ai-glow: rgba(99, 102, 241, 0.25);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-slate-50 text-slate-900 dark:bg-[#090d16] dark:text-slate-100 antialiased;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    @apply bg-indigo-600 text-white;
+  }
+
+  /* Accessible focus indicators */
+  :focus-visible {
+    @apply outline-none ring-2 ring-indigo-500 ring-offset-2 ring-offset-white dark:ring-offset-slate-950;
+  }
+}
+
+/* Design System Utilities */
+@layer utilities {
+  /* Subtle glassmorphism */
+  .setu-glass {
+    @apply bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/70 dark:border-slate-800/80 shadow-xs;
+  }
+
+  .setu-glass-elevated {
+    @apply bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200/80 dark:border-slate-700/60 shadow-lg shadow-slate-900/5 dark:shadow-black/50;
+  }
+
+  /* AI feature card highlight */
+  .setu-ai-card {
+    @apply relative overflow-hidden bg-gradient-to-br from-indigo-50/50 via-white to-sky-50/30 dark:from-indigo-950/30 dark:via-slate-900 dark:to-sky-950/20 border border-indigo-200/60 dark:border-indigo-800/50 shadow-sm;
+  }
+
+  .setu-ai-glow {
+    box-shadow: 0 0 25px -5px var(--ai-glow);
+  }
+
+  /* Stat Card Gradient borders */
+  .setu-stat-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold tracking-wide uppercase;
+  }
+}
+
+/* Custom scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 dark:bg-slate-700 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-400 dark:bg-slate-600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
