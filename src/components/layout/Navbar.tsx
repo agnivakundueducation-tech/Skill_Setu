@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { ROLES } from '../../data/mockData';
-import { ThemeToggle } from '../common/ThemeToggle';
 import { RoleBadge } from '../common/RoleBadge';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
@@ -149,8 +148,6 @@ export const Navbar: React.FC<NavbarProps> = ({
           </span>
         </div>
 
-        {/* Theme Toggle */}
-        <ThemeToggle />
 
         {/* Notifications Dropdown */}
         <div className="relative" ref={notifRef}>
