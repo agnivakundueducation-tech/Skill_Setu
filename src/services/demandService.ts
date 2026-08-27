@@ -115,6 +115,9 @@ function getCanonicalDisplayName(key: string, rawName: string): string {
   }
 }
 
+
+
+
 /**
  * Calculate Industry Skill Demand from an array of active Opportunity records.
  * Deterministic pure mathematical aggregation - no AI hallucination.
@@ -288,6 +291,10 @@ export function calculateSkillDemand(
  * Compare Industry Skill Demand against Student Cohort / Individual Readiness.
  * Generates 4-Quadrant Priority Matrix classifications and explainable gaps.
  */
+
+
+
+
 export function calculateDemandVsReadiness(
   skillsDemand: SkillDemand[],
   studentReadinessMap: Record<string, number> = {}
