@@ -533,7 +533,7 @@ export const LandingPage: React.FC = () => {
               S
             </div>
             <span className="font-semibold text-slate-900 dark:text-slate-100 text-sm">
-              SkillSetu AI Foundation
+              NYVORA FOUNDATION — An Initiative Founded by Shayan Gon Choudhury
             </span>
           </div>
 
